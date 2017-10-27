@@ -26,7 +26,6 @@ class JPGRead
 {
 public:
     JPGRead();
-    void change();
     void read();
 
 
@@ -41,6 +40,7 @@ private:
     void readSOF0();
     void readFFC4();
     void readSOS();
+    char readPicChar();
 
 
 };

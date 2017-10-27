@@ -15,18 +15,12 @@
 
 using namespace std;
 
-//please, don.t use it;
+//please, don.t use it. Everywhere;
 string dhtCode="";
 
 JPGRead::JPGRead()
 {
 
-}
-
-void JPGRead::change()
-{
-    jpg->comMark.jpgCommentLenght=4;
-    cout<<"JPGRead::change()"<<endl;
 }
 
 void JPGRead::read()
@@ -41,15 +35,22 @@ void JPGRead::read()
 
     //тест на наличие комментария
     lastMark=read_u16(jpg->pFile);
-    if (lastMark==65504)
+    if (lastMark==65504 || lastMark==65534)
+        {
+        readComment();
+    }
+
+    if (lastMark==65504 || lastMark==65534)
         {
         readComment();
     }
 
    //тест на наличие таблиц квантования;
+
     if (lastMark!=65499)
         {
-        cout<<"Error! It is not DQT tables!"<<endl;
+        cout<<"Error! It is not DQT tables! "<<lastMark<<endl;
+        return;
     }else{
         readDqt();
     }
@@ -58,6 +59,7 @@ void JPGRead::read()
     if (lastMark!=65472)
         {
             cout<<"Error! It is not SOF0 marker!"<<endl;
+            return;
     }else {
         readSOF0();
     }
@@ -67,16 +69,65 @@ void JPGRead::read()
     if (lastMark!=65476)
         {
             cout<<"Error! It is not FFC4 marker!"<<endl;
+            return;
     }else {
         readFFC4();
     }
 
+    //тест на наличие FFDA
     if (lastMark!=65498)
         {
             cout<<"Error! It is not SOS marker!"<<lastMark<<endl;
+            return;
     }else {
         readSOS();
     }
+
+        char jpgC;
+        int concreteBit=0;
+        node* tmpNode;
+        tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+        while (true) {
+            jpgC=read_u8(jpg->pFile);
+
+            if(jpgC==255){
+                jpgC=read_u8(jpg->pFile);
+                if(jpgC==217)
+                    return;
+                else
+                    jpgC=255;
+            }
+
+            int bitNumber=7;
+
+            while (bitNumber!=-1) {
+                concreteBit=(jpgC >> bitNumber)& 0x01;
+
+               //cout<<concreteBit<<"    ";
+
+                if(concreteBit){
+                     tmpNode=tmpNode->Right;
+                }else {
+                    tmpNode=tmpNode->Left;
+                }
+                if(tmpNode->Key!=-1)
+                    break;
+                bitNumber--;
+            }
+
+//            cout<<tmpNode->Key<<endl;
+
+            for(int i=0;i<7-bitNumber;i++)
+            {
+
+            }
+
+
+            break;
+
+        }
+
+
 
 
 
@@ -205,15 +256,15 @@ void JPGRead::readDqt()
     }while(lastMark==65499);
     jpg->dqtMark.jpgDQTmaxTableID=t;
 
-    //вывод таблиц квантования
-    //    for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
-    //        for(int i=0; i<8;i++){
-    //            for(int j=0;j<8;j++)
-    //                cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
-    //            cout<<endl;
-    //        }
-    //        cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-    //    }
+ //   вывод таблиц квантования
+//        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
+//            for(int i=0; i<8;i++){
+//                for(int j=0;j<8;j++)
+//                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
+//                cout<<endl;
+//            }
+//            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+//        }
 
 
 
@@ -357,3 +408,15 @@ void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 
 }
 
+char JPGRead::readPicChar(){
+
+    char c=read_u8(jpg->pFile);
+    if(c==255){
+        if(c==217)
+            return -1;
+        else
+            return 255;
+        return c;
+    }
+
+}
