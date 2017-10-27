@@ -71,6 +71,16 @@ void JPGRead::read()
         readFFC4();
     }
 
+    if (lastMark!=65498)
+        {
+            cout<<"Error! It is not SOS marker!"<<lastMark<<endl;
+    }else {
+        readSOS();
+    }
+
+
+
+
     cout<<"to doooo"<<endl;
 
 }
@@ -296,7 +306,21 @@ void JPGRead::readFFC4()
 
 }
 
-
+void JPGRead::readSOS()
+{
+    int sosTmp=0;
+    jpg->sosMark.jpgSosLenght=read_u16(jpg->pFile);
+    jpg->sosMark.jpgSosComponentValue=read_u8(jpg->pFile);
+    jpg->sosMark.jpgComponentsTable=new pair<int,int>[jpg->sosMark.jpgSosComponentValue];
+    for(int i=0;i<jpg->sosMark.jpgSosComponentValue;i++){
+        sosTmp=read_u8(jpg->pFile);
+        jpg->sosMark.jpgComponentsTable[i].first=sosTmp>>4;
+        jpg->sosMark.jpgComponentsTable[i].second=sosTmp&15;
+    }
+    jpg->sosMark.nonameBite1=read_u16(jpg->pFile);
+    jpg->sosMark.nonameBite2=read_u16(jpg->pFile);
+    jpg->sosMark.nonameBite3=read_u16(jpg->pFile);
+}
 
 void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 {
