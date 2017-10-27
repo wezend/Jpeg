@@ -1,8 +1,35 @@
+#include<iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <cstdio>
+#include <tree.h>
+#include <utility>
+#include <fstream>
+#include <string.h>
+#include <math.h>
+#include "jpg.h"
+#include "jpgread.h"
+#include "jpgwrite.h"
 
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    FOCC FOCC;
-    FOCC you;
+
+    JPG jpg("D:\\test.jpg");
+    JPGRead jpgRead;
+    jpgRead.setJpg(&jpg);
+
+    JPGWrite jpgWrite;
+    jpgWrite.setJpg(&jpg);
+
+    jpgRead.read();
+
+    cout<<jpg.comMark.jpgCommentLenght;
+
+
+
+
     return 0;
 }
