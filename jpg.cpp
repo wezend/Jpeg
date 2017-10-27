@@ -23,3 +23,5 @@ JPG::JPG(const char *pFile)
 {
     this->pFile=fopen(pFile,"rb");
 }
+
+

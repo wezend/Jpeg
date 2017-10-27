@@ -18,4 +18,6 @@ TREE(){root=new node;}
 node *addNode(int key, int lvl,node * x);
 };
 
+
+
 #endif // TREE_H

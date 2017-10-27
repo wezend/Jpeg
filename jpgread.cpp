@@ -15,6 +15,9 @@
 
 using namespace std;
 
+//please, don.t use it;
+string dhtCode="";
+
 JPGRead::JPGRead()
 {
 
@@ -60,74 +63,13 @@ void JPGRead::read()
     }
 
     //тест на наличие FFC4
-//    lastMark=read_u16(jpg->pFile);
-//    if (lastMark!=65476)
-//        {
-//            cout<<"Error! It is not FFC4 marker!"<<endl;
-//    }else {
-
-//        int dhtAllMarkCounter=0;
-//        //считывание FFC4
-//        do{
-
-//        JPGDHT *dhtMark=new JPGDHT;
-
-//        dhtMark->jpgDHTLenght=read_u16(jpg->pFile);
-//        int dhtTmp=read_u8(jpg->pFile);
-//        if((dhtTmp>>4)==1)
-//            dhtMark->jpgTableType=1;
-//        dhtMark->jpgTableID=dhtTmp&15;
-
-//        int dhtTmpArr[16];
-//        int dhtElCount=0;
-
-//        for(int i=0;i<16;i++){
-//            dhtTmpArr[i]=read_u8(pFile);
-//            dhtElCount+=dhtTmpArr[i];
-//        }
-
-//        dhtMark->jpgTableSize=dhtElCount;
-//        dhtMark->jpgDHTtable=new pair<int,string>[dhtElCount];
-//        int dhtTabeleCounter=0;
-
-//        TREE DHTtree;
-//        node* tmpNode;
-//        tmpNode=DHTtree.root;
-
-//        for(int i=0;i<16;i++){
-//            for(int j=0;j<dhtTmpArr[i];j++){
-//                dhtTmp=read_u8(pFile);
-//                dhtCode="";
-//                makeTreeRec(i,dhtTmp,tmpNode, &DHTtree);
-//                dhtMark->jpgDHTtable[dhtTabeleCounter].first=dhtTmp;
-//                dhtMark->jpgDHTtable[dhtTabeleCounter].second=dhtCode;
-//                dhtTabeleCounter++;
-//            }
-//        }
-
-//        dhtAllMark.jpgDHTtables[dhtAllMarkCounter]=dhtMark;
-//        dhtAllMarkCounter++;
-
-
-//        lastMark=read_u16(pFile);
-//        }while(lastMark==65476);
-
-//    }
-
-
-
-//     демонстрация работоспособности считывания FFC4
-   /* for(int i=0;i<4;i++) {
-        for(int j=0;j<dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-        cout<<hex<<dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
-
-        cout<<"~~~~~~~~~~~~~~"<<endl;
-    }*/
-
-
-
-
-
+    lastMark=read_u16(jpg->pFile);
+    if (lastMark!=65476)
+        {
+            cout<<"Error! It is not FFC4 marker!"<<endl;
+    }else {
+        readFFC4();
+    }
 
     cout<<"to doooo"<<endl;
 
@@ -286,5 +228,108 @@ void JPGRead::readSOF0()
 
        jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID=read_u8(jpg->pFile);
     }
+}
+
+void JPGRead::readFFC4()
+{
+    int dhtAllMarkCounter=0;
+
+    //считывание FFC4
+    do{
+
+    JPGDHT *dhtMark=new JPGDHT;
+
+    dhtMark->jpgDHTLenght=read_u16(jpg->pFile);
+    int dhtTmp=read_u8(jpg->pFile);
+    if((dhtTmp>>4)==1)
+        dhtMark->jpgTableType=1;
+    dhtMark->jpgTableID=dhtTmp&15;
+
+    int dhtTmpArr[16];
+    int dhtElCount=0;
+
+    for(int i=0;i<16;i++){
+        dhtTmpArr[i]=read_u8(jpg->pFile);
+        dhtElCount+=dhtTmpArr[i];
+    }
+
+    dhtMark->jpgTableSize=dhtElCount;
+    dhtMark->jpgDHTtable=new pair<int,string>[dhtElCount];
+    int dhtTabeleCounter=0;
+
+    TREE DHTtree;
+    node *tmpNode;
+    tmpNode=DHTtree.root;
+
+
+
+    for(int i=0;i<16;i++){
+        for(int j=0;j<dhtTmpArr[i];j++){
+            dhtTmp=read_u8(jpg->pFile);
+            dhtCode="";
+            makeTreeRec(i,dhtTmp,tmpNode, &DHTtree);
+            dhtMark->jpgDHTtable[dhtTabeleCounter].first=dhtTmp;
+            dhtMark->jpgDHTtable[dhtTabeleCounter].second=dhtCode;
+            dhtTabeleCounter++;
+        }
+    }
+
+
+    jpg->dhtAllMark.jpgDHTtables[dhtAllMarkCounter]=dhtMark;
+    jpg->dhtAllMark.jpgDHTtables[dhtAllMarkCounter]->jpgDHTtreesRoots=DHTtree.root;
+    dhtAllMarkCounter++;
+
+
+
+
+
+    lastMark=read_u16(jpg->pFile);
+    }while(lastMark==65476);
+
+    //демонстрация работоспособности считывания FFC4
+//    for(int i=0;i<4;i++) {
+//        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
+//        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+//        cout<<"~~~~~~~~~~~~~~"<<endl;
+//    }
+
+
+}
+
+
+
+void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
+{
+    if (tmpNode->Left !=0 and tmpNode->Right !=0 and tmpNode->Left->Key != -1 and tmpNode->Right->Key != -1){
+    tmpNode->Key = -2;
+    dhtCode.erase(dhtCode.length()-1,1);
+    makeTreeRec(i,dhtTmp,tmpNode->Back,DHTtree);
+    }
+    if(tmpNode->Left==0){
+    if(tmpNode->Lvl==i){
+    tmpNode->Left=DHTtree->addNode(dhtTmp,(tmpNode->Lvl+1),tmpNode);
+    dhtCode=dhtCode+"0";
+
+    }else {
+    tmpNode->Left=DHTtree->addNode(-1,(tmpNode->Lvl+1),tmpNode);
+    dhtCode+="0";
+    makeTreeRec(i,dhtTmp,tmpNode->Left,DHTtree);
+    }
+    }else if (tmpNode->Left->Key==-1) {
+    dhtCode+="0";
+    makeTreeRec(i,dhtTmp,tmpNode->Left,DHTtree);
+    }else if(tmpNode->Right==0){
+    if(tmpNode->Lvl==i){
+    tmpNode->Right=DHTtree->addNode(dhtTmp,(tmpNode->Lvl+1),tmpNode);
+    dhtCode+="1";
+    }else {
+    tmpNode->Right=DHTtree->addNode(-1,(tmpNode->Lvl+1),tmpNode);
+    dhtCode+="1";
+    makeTreeRec(i,dhtTmp,tmpNode->Right,DHTtree); }
+    }else if (tmpNode->Right->Key==-1) {
+    dhtCode+="1";
+    makeTreeRec(i,dhtTmp,tmpNode->Right,DHTtree);
+    }
+
 }
 
