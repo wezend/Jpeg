@@ -28,7 +28,7 @@ public:
 
 private:
     JPG *jpg;
-    FILE *f;
+    FILE *f1;
 };
 
 #endif // JPGWRITE_H
