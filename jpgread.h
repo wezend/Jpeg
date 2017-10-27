@@ -40,6 +40,7 @@ private:
     void readDqt();
     void readSOF0();
     void readFFC4();
+    void readSOS();
 
 
 };
