@@ -9,6 +9,8 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include"tree.h"
+#include "jpgread.h"
 
 
 using namespace std;
@@ -41,13 +43,91 @@ void JPGRead::read()
         readComment();
     }
 
-   // lastMark=read_u16(jpg->pFile);
+   //тест на наличие таблиц квантования;
     if (lastMark!=65499)
         {
         cout<<"Error! It is not DQT tables!"<<endl;
     }else{
         readDqt();
     }
+
+    //тест на наличие SOF0
+    if (lastMark!=65472)
+        {
+            cout<<"Error! It is not SOF0 marker!"<<endl;
+    }else {
+        readSOF0();
+    }
+
+    //тест на наличие FFC4
+//    lastMark=read_u16(jpg->pFile);
+//    if (lastMark!=65476)
+//        {
+//            cout<<"Error! It is not FFC4 marker!"<<endl;
+//    }else {
+
+//        int dhtAllMarkCounter=0;
+//        //считывание FFC4
+//        do{
+
+//        JPGDHT *dhtMark=new JPGDHT;
+
+//        dhtMark->jpgDHTLenght=read_u16(jpg->pFile);
+//        int dhtTmp=read_u8(jpg->pFile);
+//        if((dhtTmp>>4)==1)
+//            dhtMark->jpgTableType=1;
+//        dhtMark->jpgTableID=dhtTmp&15;
+
+//        int dhtTmpArr[16];
+//        int dhtElCount=0;
+
+//        for(int i=0;i<16;i++){
+//            dhtTmpArr[i]=read_u8(pFile);
+//            dhtElCount+=dhtTmpArr[i];
+//        }
+
+//        dhtMark->jpgTableSize=dhtElCount;
+//        dhtMark->jpgDHTtable=new pair<int,string>[dhtElCount];
+//        int dhtTabeleCounter=0;
+
+//        TREE DHTtree;
+//        node* tmpNode;
+//        tmpNode=DHTtree.root;
+
+//        for(int i=0;i<16;i++){
+//            for(int j=0;j<dhtTmpArr[i];j++){
+//                dhtTmp=read_u8(pFile);
+//                dhtCode="";
+//                makeTreeRec(i,dhtTmp,tmpNode, &DHTtree);
+//                dhtMark->jpgDHTtable[dhtTabeleCounter].first=dhtTmp;
+//                dhtMark->jpgDHTtable[dhtTabeleCounter].second=dhtCode;
+//                dhtTabeleCounter++;
+//            }
+//        }
+
+//        dhtAllMark.jpgDHTtables[dhtAllMarkCounter]=dhtMark;
+//        dhtAllMarkCounter++;
+
+
+//        lastMark=read_u16(pFile);
+//        }while(lastMark==65476);
+
+//    }
+
+
+
+//     демонстрация работоспособности считывания FFC4
+   /* for(int i=0;i<4;i++) {
+        for(int j=0;j<dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
+        cout<<hex<<dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+
+        cout<<"~~~~~~~~~~~~~~"<<endl;
+    }*/
+
+
+
+
+
 
     cout<<"to doooo"<<endl;
 
@@ -185,5 +265,26 @@ void JPGRead::readDqt()
 
 
 
+}
+
+void JPGRead::readSOF0()
+{
+    //считывание SOF0
+    jpg->sof0Mark.jpgSOF0Lenght=read_u16(jpg->pFile);
+    jpg->sof0Mark.jpgSOF0Precision=read_u8(jpg->pFile);
+    jpg->sof0Mark.jpgSOF0Height=read_u16(jpg->pFile);
+    jpg->sof0Mark.jpgSOF0Width=read_u16(jpg->pFile);
+    jpg->sof0Mark.jpgSOF0WComponentValue=read_u8(jpg->pFile);
+
+    for(int i=0;i<jpg->sof0Mark.jpgSOF0WComponentValue;i++){
+
+       jpg->sof0Mark.jpgSOF0WComponents[i].jpgCompID=read_u8(jpg->pFile);
+
+       int decimation=read_u8(jpg->pFile);
+       jpg->sof0Mark.jpgSOF0WComponents[i].jpgHorizontalDecimation=decimation>>4;
+       jpg->sof0Mark.jpgSOF0WComponents[i].jpgVerticalDecimation=decimation&15;
+
+       jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID=read_u8(jpg->pFile);
+    }
 }
 

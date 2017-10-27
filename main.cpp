@@ -26,13 +26,7 @@ int main(int argc, char *argv[])
 
     jpgRead.read();
 
-
-
-
-    cout<<jpg.comMark.jpgCommentLenght;
-
-
-
+    cout<<jpg.sof0Mark.jpgSOF0Height;
 
     return 0;
 }

@@ -38,6 +38,7 @@ private:
     int lastMark;
     void readComment();
     void readDqt();
+    void readSOF0();
 
 };
 
