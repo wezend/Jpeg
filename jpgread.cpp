@@ -88,15 +88,10 @@ void JPGRead::read()
         node* tmpNode;
         tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
         while (true) {
-            jpgC=read_u8(jpg->pFile);
 
-            if(jpgC==255){
-                jpgC=read_u8(jpg->pFile);
-                if(jpgC==217)
-                    return;
-                else
-                    jpgC=255;
-            }
+            jpgC=readPicChar();
+            if(jpgC==-1)
+                return;
 
             int bitNumber=7;
 
@@ -115,7 +110,7 @@ void JPGRead::read()
                 bitNumber--;
             }
 
-//            cout<<tmpNode->Key<<endl;
+            cout<<tmpNode->Key<<endl;
 
             for(int i=0;i<7-bitNumber;i++)
             {
@@ -257,14 +252,14 @@ void JPGRead::readDqt()
     jpg->dqtMark.jpgDQTmaxTableID=t;
 
  //   вывод таблиц квантования
-//        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
-//            for(int i=0; i<8;i++){
-//                for(int j=0;j<8;j++)
-//                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
-//                cout<<endl;
-//            }
-//            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-//        }
+        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
+            for(int i=0; i<8;i++){
+                for(int j=0;j<8;j++)
+                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
+                cout<<endl;
+            }
+            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+        }
 
 
 
