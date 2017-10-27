@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
 
     jpgRead.read();
 
+
+
+
     cout<<jpg.comMark.jpgCommentLenght;
 
 

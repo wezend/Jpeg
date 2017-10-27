@@ -30,12 +30,14 @@ public:
     void read();
 
 
+
     JPG *getJpg() const;
     void setJpg(JPG *value);
 private:
     JPG *jpg;
     int lastMark;
     void readComment();
+    void readDqt();
 
 };
 
