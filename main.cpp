@@ -2,6 +2,6 @@
 
 int main(int argc, char *argv[])
 {
-    PogChamp;
+    FOCC FOCC;
     return 0;
 }
