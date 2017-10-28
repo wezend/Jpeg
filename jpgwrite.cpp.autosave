@@ -109,6 +109,21 @@ void JPGWrite::write()
     }
     fwrite(&o, 64, 1, f1);
     }
+    o[0]=HEX_TO_DEC("FF");
+    o[1]=HEX_TO_DEC("C0");
+    o[2]=jpg->sof0Mark.jpgSOF0Lenght;
+    o[3]=jpg->sof0Mark.jpgSOF0Precision;
+    o[4]=jpg->sof0Mark.jpgSOF0Height;
+    o[4]=jpg->sof0Mark.jpgSOF0Width;
+    o[5]=jpg->sof0Mark.jpgSOF0WComponentValue;
+    fwrite(&o, 5, 1, f1);
+    for(int i = 0; i < jpg->sof0Mark.jpgSOF0WComponentValue;i++){
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgCompID;
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgHorizontalDecimation*10+jpg->sof0Mark.jpgSOF0WComponents[i].jpgVerticalDecimation;
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID;
+        fwrite(&o, 3, 1, f1);    
+    }
+    //fwrite(&o, 5, 1, f1);
 
 }
 

@@ -256,15 +256,15 @@ void JPGRead::readDqt()
     }while(lastMark==65499);
     jpg->dqtMark.jpgDQTmaxTableID=t;
 
- //   вывод таблиц квантования
-//        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
-//            for(int i=0; i<8;i++){
-//                for(int j=0;j<8;j++)
-//                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
-//                cout<<endl;
-//            }
-//            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-//        }
+    //вывод таблиц квантования
+        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
+            for(int i=0; i<8;i++){
+                for(int j=0;j<8;j++)
+                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
+                cout<<endl;
+            }
+            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+        }
 
 
 
