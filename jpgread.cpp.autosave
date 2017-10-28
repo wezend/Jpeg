@@ -110,12 +110,9 @@ void JPGRead::read()
                 bitNumber--;
             }
 
-           // cout<<tmpNode->Key<<endl;
+            cout<<tmpNode->Key<<endl;
 
-            for(int i=0;i<7-bitNumber;i++)
-            {
-
-            }
+            
 
 
             break;
