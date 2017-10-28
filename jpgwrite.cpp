@@ -51,18 +51,84 @@ return s;
 
 void JPGWrite::write()
 {
-    f = fopen("D:\\test1.jpg","w+");
+    f = fopen("D:\\test2.jpg","w+");
     //ofstream fcin;
     //fcin.open("D:\\test1.jpg");
-    char o[10000];
+    int o[100];
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("D8");
-    cout<<"LOL"<<jpg->dqtMark.jpgDQTLenght[0];
-    //for(int j = 0;j < jpg->dqtMark.)
-    o[2]=o[0];
-    o[3]=HEX_TO_DEC("DB");
-    for(int i = 0;i<67;i++){
+    int k = 2;
+    for(int l = 0;l< 1;l++){
+    o[k]=o[0];
+    k++;
+    o[k]=HEX_TO_DEC("DB");
+    k++;
+    o[k]=0;
+    k++;
+    o[k]=jpg->dqtMark.jpgDQTLenght[l];
+    k++;
+    o[k]=l;
+    k++;
+    //o[k+z]=jpg->dqtMark.jpgDQTtable[l][i][j];
+    int i = 0,j = 0,f = 2,z=0;
+    while((i<8)&&(j<8)){
+        cout<<z<<" ";
+        if (f==0){
+            o[k+z]=z;
+            cout<<o[k+z]<<" ";
+            if(i!=7)
+                i+=1;
+            else
+                j+=1;
+            //o[k+z]=jpg->dqtMark.jpgDQTtable[l][i][j];
 
+            z++;
+            f=1;
+            continue;
+        }
+        if(f==1){
+           o[k+z]=z;
+           cout<<o[k+z]<<" ";
+            i--;
+            j++;
+            if(i==0 or j==7)
+                {f=2;
+            }
+            //o[k+z]=jpg->dqtMark.jpgDQTtable[l][i][j];
+
+            z++;
+            continue;
+        }
+        if (f==2){
+           o[k+z]=z;
+           cout<<o[k+z]<<" ";
+            if(j!=7)
+                j++;
+            else
+                i++;
+            //o[k+z]=jpg->dqtMark.jpgDQTtable[l][i][j];
+
+            z++;
+            f=3;
+            continue;
+        }
+        if(f==3){
+            o[k+z]=z;
+            cout<<o[k+z]<<" ";
+            i++;
+            j--;
+
+            if(j==0 or i==7)
+                f=0;
+            //o[k+z]=jpg->dqtMark.jpgDQTtable[l][i][j];
+
+            z++;
+            continue;
+        }
+    }
+    cout<<"      "<<k<<"    "<<jpg->dqtMark.jpgDQTLenght[l];
+    k=k+jpg->dqtMark.jpgDQTLenght[l]-3;
+    cout<<"      "<<k<<"    ";
     }
     //fcin<<o[3];
     fwrite(&o, sizeof (o), 1, f);
