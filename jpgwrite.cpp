@@ -141,15 +141,37 @@ void JPGWrite::write()
         o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID;
         fwrite(&o, 3, 1, f1);
     }
+    for(int i = 0;i<4;i++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C4");
     fwrite(&o, 2, 1, f1);
-    for(int i = 0;i<4;i++){
     o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
     o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgTableType*10+jpg->dhtAllMark.jpgDHTtables[i]->jpgTableID;
-    //o[2]=jpg->dhtAllMark.jpgDHTtables[i]->
-    fwrite(&o, 5, 1, f1);
+    o[2]=jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;
+    fwrite(&o, 3, 1, f1);
+    for(int j=0;j<16;j++){
+        // пара несделанная
+    }
+    fwrite(&o, 16, 1, f1);
+
 }
+    o[0]=HEX_TO_DEC("FF");
+    o[1]=HEX_TO_DEC("DA");
+    o[2]=0;
+    o[3]=jpg->sosMark.jpgSosLenght;
+    o[4]=jpg->sosMark.jpgSosComponentValue;
+    fwrite(&o, 5,1,f1);
+    for(int i = 0;i<jpg->sosMark.jpgSosComponentValue;i++){
+        o[0]=i+1;
+        o[1]=jpg->sosMark.jpgComponentsTable[0].first*10+jpg->sosMark.jpgComponentsTable[0].second;
+        fwrite(&o, 2,1,f1);
+    }
+        o[0]=jpg->sosMark.nonameBite1;
+        o[1]=jpg->sosMark.nonameBite2;
+        o[0]=jpg->sosMark.nonameBite3;
+        //записываем пиксели
+        o[0]=HEX_TO_DEC("FF");
+        o[1]=HEX_TO_DEC("D9");
 
 }
 
