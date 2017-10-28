@@ -23,12 +23,9 @@ int main(int argc, char *argv[])
 
     JPGWrite jpgWrite;
     jpgWrite.setJpg(&jpg);
+    jpgWrite.write();
 
     jpgRead.read();
-
-    cout<<jpg.comMark.jpgCommentLenght;
-
-
 
 
     return 0;

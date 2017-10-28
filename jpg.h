@@ -15,6 +15,8 @@ using namespace std;
 
 //FFFE
 typedef struct{
+    //определяет, есть ли в изображении коментарий. если = 0, значит нет
+    //если не 0, то это длина последнего комментария(может быть несколько)
     unsigned int jpgCommentLenght=0;
     string jpgCommentContent[16];
 } JPGCOMMENT;
@@ -56,7 +58,7 @@ typedef struct
     unsigned int jpgTableID=0;
     unsigned int jpgTableSize=0;
     pair<int,string> *jpgDHTtable;
-
+    node *jpgDHTtreesRoots;
 
 } JPGDHT;
 

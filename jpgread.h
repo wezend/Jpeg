@@ -30,15 +30,21 @@ public:
     void read();
 
 
+
     JPG *getJpg() const;
     void setJpg(JPG *value);
 private:
     JPG *jpg;
     int lastMark;
     void readComment();
+    void readDqt();
+    void readSOF0();
+    void readFFC4();
+
 
 };
 
+void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);
 
 static unsigned short read_u8(FILE *fp)
 {

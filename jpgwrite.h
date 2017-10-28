@@ -21,13 +21,14 @@ class JPGWrite
 {
 public:
     JPGWrite();
-    void change();
-
+    void write();
     JPG *getJpg() const;
     void setJpg(JPG *value);
+    int HEX_TO_DEC(string st);
 
 private:
     JPG *jpg;
+    FILE *f;
 };
 
 #endif // JPGWRITE_H
