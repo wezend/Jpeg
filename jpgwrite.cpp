@@ -51,7 +51,7 @@ return s;
 
 void JPGWrite::write()
 {
-    f1 = fopen("D:\\test2.jpg","wb");
+    f1 = fopen("D:\\test1.jpg","wb");
     char o[1000];
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("D8");
@@ -109,6 +109,47 @@ void JPGWrite::write()
     }
     fwrite(&o, 64, 1, f1);
     }
+    o[0]=HEX_TO_DEC("FF");
+    o[1]=HEX_TO_DEC("C0");
+    o[2]=0;
+    o[3]=jpg->sof0Mark.jpgSOF0Lenght;
+    o[4]=jpg->sof0Mark.jpgSOF0Precision;
+    fwrite(&o, 5, 1, f1);
+    if(jpg->sof0Mark.jpgSOF0Height> 255){
+       o[0]=jpg->sof0Mark.jpgSOF0Height;
+       fwrite(&o, 1, 2, f1);
+    }
+    else{
+        o[0]=0;
+        o[1]=jpg->sof0Mark.jpgSOF0Height;
+        fwrite(&o, 2, 1, f1);
+    }
+    if(jpg->sof0Mark.jpgSOF0Height> 255){
+       o[0]=jpg->sof0Mark.jpgSOF0Width;
+       fwrite(&o, 1, 2, f1);
+    }
+    else{
+        o[0]=0;
+        o[1]=jpg->sof0Mark.jpgSOF0Height;
+        fwrite(&o, 2, 1, f1);
+    }
+    o[0]=jpg->sof0Mark.jpgSOF0WComponentValue;
+    fwrite(&o, 1, 1, f1);
+    for(int i = 0; i < jpg->sof0Mark.jpgSOF0WComponentValue;i++){
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgCompID;
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgHorizontalDecimation*10+jpg->sof0Mark.jpgSOF0WComponents[i].jpgVerticalDecimation;
+        o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID;
+        fwrite(&o, 3, 1, f1);
+    }
+    o[0]=HEX_TO_DEC("FF");
+    o[1]=HEX_TO_DEC("C4");
+    fwrite(&o, 2, 1, f1);
+    for(int i = 0;i<4;i++){
+    o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
+    o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgTableType*10+jpg->dhtAllMark.jpgDHTtables[i]->jpgTableID;
+    //o[2]=jpg->dhtAllMark.jpgDHTtables[i]->
+    fwrite(&o, 5, 1, f1);
+}
 
 }
 
