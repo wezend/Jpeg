@@ -83,44 +83,95 @@ void JPGRead::read()
         readSOS();
     }
 
-        char jpgC;
-        int concreteBit=0;
-        node* tmpNode;
-        tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
-        while (true) {
 
-            jpgC=readPicChar();
-            if(jpgC==-1)
-                return;
 
-            int bitNumber=7;
+    //я ненавижу эту срань. если кто то попросит
+    //объяснить, что написано ниже,
+    //я ему в лицо ударю.
+    //Я НЕ ПОНИМАЮ КАК ЭТО РАБОТЕТ, ПОТОМУ ЧТО ЭТО ДИЧЬ.(но я это писал)
+    //приятного просмотра
 
-            while (bitNumber!=-1) {
-                concreteBit=(jpgC >> bitNumber)& 0x01;
+    node* noda;
+    int bitNumber=7;
+    char jpgC;
+    int concreteBit=0;
+    int index=0;
 
-               //cout<<concreteBit<<"    ";
 
-                if(concreteBit){
-                     tmpNode=tmpNode->Right;
-                }else {
-                    tmpNode=tmpNode->Left;
+
+    int x[3][8][8];
+    int f=2;
+    int n,m;
+    n=m=0;
+    int i=0,j=0;
+
+
+
+
+
+
+
+
+    for(int n=0;n<8;n++){
+        for(int m=0;m<8;m++)
+            for(int tableType=0;tableType<3;tableType++ ){
+
+            noda=isOK(&bitNumber,&jpgC,&concreteBit, index);
+            if(noda->Key==-1)
+                break;
+
+            if(tableType==0){
+                if(noda->Key==0)
+                    addInTable(i, j, x,tableType,noda->Key, f);
+
+                else {
+                    addInTable(&i, &j, &x,tableType,koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key),&f);
+                     }
+
                 }
-                if(tmpNode->Key!=-1)
-                    break;
-                bitNumber--;
-            }
-
-           // cout<<tmpNode->Key<<endl;
-
-            for(int i=0;i<7-bitNumber;i++)
-            {
 
             }
-
-
-            break;
-
+            cout<<endl;
         }
+
+
+
+
+
+
+//        node* tmpNode;
+//        tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+//        while (true) {
+
+//            jpgC=readPicChar();
+//            if(jpgC==-1)
+//                return;
+
+//            int bitNumber=7;
+
+//            while (bitNumber!=-1) {
+//                concreteBit=(jpgC >> bitNumber)& 0x01;
+
+//               //cout<<concreteBit<<"    ";
+
+//                if(concreteBit){
+//                     tmpNode=tmpNode->Right;
+//                }else {
+//                    tmpNode=tmpNode->Left;
+//                }
+//                if(tmpNode->Key!=-1)
+//                    break;
+//                bitNumber--;
+//            }
+
+//            //cout<<tmpNode->Key<<endl;
+
+            
+
+
+//            break;
+
+//        }
 
 
 
@@ -403,15 +454,159 @@ void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 
 }
 
-char JPGRead::readPicChar(){
+node* JPGRead::isOK(int *bitNumber,char *jpgC,int *concreteBit,int index){
 
-    char c=read_u8(jpg->pFile);
-    if(c==255){
-        if(c==217)
-            return -1;
-        else
-            return 255;
-        return c;
+    node* tmpNode;
+
+    //пофиксить [0] на конкретную таблицу в зависимости от кэфов
+    tmpNode=jpg->dhtAllMark.jpgDHTtables[index]->jpgDHTtreesRoots;
+
+    while (true) {
+        *jpgC=read_u8(jpg->pFile);
+        if(*jpgC==255){
+            *jpgC=read_u8(jpg->pFile);
+                if(*jpgC==217){
+                    tmpNode->Key=-1;
+                    return tmpNode;
+                    }
+                }
+
+        if(*bitNumber==-1)
+            *bitNumber=7;
+
+        while (*bitNumber!=-1) {
+            *concreteBit=(*jpgC >> *bitNumber)& 0x01;
+
+           //cout<<concreteBit<<"    ";
+
+
+            if(*concreteBit){
+                 tmpNode=tmpNode->Right;
+            }else {
+                tmpNode=tmpNode->Left;
+            }
+
+            *bitNumber=*bitNumber-1;
+            if(tmpNode->Key!=-1)
+                return tmpNode;
+        }
+    }
+}
+
+int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits){
+
+    int kef=0;
+    bool firstBIT=0;
+    bool bitVAL;
+    int lenth=countOfBits;
+
+    while (true) {
+
+        if(*bitNumber==-1){
+        *jpgC=read_u8(jpg->pFile);
+        if(*jpgC==255){
+            *jpgC=read_u8(jpg->pFile);
+                if(*jpgC==217){
+                    return -1;
+                    }
+                }
+        }
+
+        if(*bitNumber==-1)
+            *bitNumber=7;
+
+
+    while(countOfBits||(*bitNumber>-1)){
+        *concreteBit=( *jpgC >> *bitNumber) & 0x01;
+
+        if(firstBIT==0){
+            firstBIT=1;
+            bitVAL=concreteBit;
+        }
+
+
+
+        kef=kef|*concreteBit;
+        kef=kef<<1;
+        *bitNumber=*bitNumber-1;
+        countOfBits--;
+
+        if(countOfBits)
+            if(bitVAL==1)
+            return kef;
+            else {
+                kef=kef-pow(2,lenth)+1;
+                return kef;
+            }
+        }
+    }
+}
+
+void JPGRead::addInTable(int &i, int &j, int *table, int index, int key,int *f){
+
+    while((i<8)&&(j<8)){
+        if (*f==0){
+
+            *table[index][i][j]=key;
+
+            if(i!=7)
+                i+=1;
+            else
+                j+=1;
+
+            if(index==0)
+                *f=1;
+            continue;
+        }
+        if(*f==1){
+
+            *table[index][i][j]=key;
+
+            i--;
+            j++;
+            if(i==0 or j==7){
+                if(index==0)
+                *f=2;
+            }
+            continue;
+        }
+        if (*f==2){
+
+            *table[index][i][j]=key;
+
+            if(j!=7)
+                j++;
+            else
+                i++;
+
+            if(index==0)
+            *f=3;
+
+            continue;
+        }
+        if(*f==3){
+
+            *table[index][i][j]=key;
+
+            i++;
+            j--;
+
+            if(j==0 or i==7)
+
+                if(index==0)
+                *f=0;
+
+            continue;
+        }
     }
 
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++)
+            cout<<*table[index][i][j]<<" ";
+        cout<<endl;
+    }
+    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+
+
 }
+

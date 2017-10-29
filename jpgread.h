@@ -40,7 +40,9 @@ private:
     void readSOF0();
     void readFFC4();
     void readSOS();
-    char readPicChar();
+    node* isOK(int *bitNumber,char *jpgC,int *concreteBit, int index);
+    int koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits);
+    void addInTable(int &i, int &j, int *table, int index, int key, int *f);
 
 
 };
