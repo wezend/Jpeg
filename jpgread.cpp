@@ -91,6 +91,7 @@ void JPGRead::read()
     //Я НЕ ПОНИМАЮ КАК ЭТО РАБОТЕТ, ПОТОМУ ЧТО ЭТО ДИЧЬ.(но я это писал)
     //приятного просмотра
 
+
     node* noda;
     int bitNumber=7;
     char jpgC;
@@ -99,83 +100,49 @@ void JPGRead::read()
 
 
 
-    int x[3][8][8];
+    int x[2][8][8];
     int f=2;
     int n,m;
     n=m=0;
     int i=0,j=0;
-
-
-
-
-
-
-
+    bool acTableTrigger=0;
 
     for(int n=0;n<8;n++){
         for(int m=0;m<8;m++)
-            for(int tableType=0;tableType<3;tableType++ ){
+            for(int tableType=0;tableType<2;tableType++ ){
 
             noda=isOK(&bitNumber,&jpgC,&concreteBit, index);
             if(noda->Key==-1)
                 break;
 
+            //заполнение первой таблицы
             if(tableType==0){
-                if(noda->Key==0)
-                    addInTable(i, j, x,tableType,noda->Key, f);
-
+                addInTable(&i, &j,tableType, &f);
+                if(noda->Key==0){
+                    x[tableType][i][j]=noda->Key;
+                }
                 else {
-                    addInTable(&i, &j, &x,tableType,koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key),&f);
+                    x[tableType][i][j]=koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key);
                      }
-
                 }
 
-            }
-            cout<<endl;
-        }
-
-
-
-
-
-
-//        node* tmpNode;
-//        tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
-//        while (true) {
-
-//            jpgC=readPicChar();
-//            if(jpgC==-1)
-//                return;
-
-//            int bitNumber=7;
-
-//            while (bitNumber!=-1) {
-//                concreteBit=(jpgC >> bitNumber)& 0x01;
-
-//               //cout<<concreteBit<<"    ";
-
-//                if(concreteBit){
-//                     tmpNode=tmpNode->Right;
-//                }else {
-//                    tmpNode=tmpNode->Left;
+            //заполнение второй таблицы
+            if((tableType==1) && (acTableTrigger==0)){
+//                if(noda->Key==0){
+//                    int i2=i;
+//                    int j2=j;
+//                    int f2=f;
+//                    while((i2<8)&&(j2<8)){
+//                        addInTable(&i2, &j2,tableType, &f2);
+//                        x[tableType][i2][j2]=noda->Key;
+//                    }
+//                    acTableTrigger==1;
 //                }
-//                if(tmpNode->Key!=-1)
-//                    break;
-//                bitNumber--;
-//            }
+            }
 
-//            //cout<<tmpNode->Key<<endl;
+    }
 
-            
-
-
-//            break;
-
-//        }
-
-
-
-
+}
 
 
     cout<<"to doooo"<<endl;
@@ -393,12 +360,12 @@ void JPGRead::readFFC4()
     lastMark=read_u16(jpg->pFile);
     }while(lastMark==65476);
 
-    //демонстрация работоспособности считывания FFC4
-//    for(int i=0;i<4;i++) {
-//        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-//        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
-//        cout<<"~~~~~~~~~~~~~~"<<endl;
-//    }
+  //  демонстрация работоспособности считывания FFC4
+    for(int i=0;i<4;i++) {
+        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
+        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+        cout<<"~~~~~~~~~~~~~~"<<endl;
+    }
 
 
 }
@@ -462,6 +429,7 @@ node* JPGRead::isOK(int *bitNumber,char *jpgC,int *concreteBit,int index){
     tmpNode=jpg->dhtAllMark.jpgDHTtables[index]->jpgDHTtreesRoots;
 
     while (true) {
+        if(*bitNumber==-1)
         *jpgC=read_u8(jpg->pFile);
         if(*jpgC==255){
             *jpgC=read_u8(jpg->pFile);
@@ -500,6 +468,9 @@ int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOf
     bool bitVAL;
     int lenth=countOfBits;
 
+    if(*bitNumber==-1)
+        *bitNumber=7;
+
     while (true) {
 
         if(*bitNumber==-1){
@@ -511,6 +482,7 @@ int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOf
                     }
                 }
         }
+
 
         if(*bitNumber==-1)
             *bitNumber=7;
@@ -533,80 +505,82 @@ int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOf
 
         if(countOfBits)
             if(bitVAL==1)
-            return kef;
+                return kef;
             else {
                 kef=kef-pow(2,lenth)+1;
                 return kef;
             }
-        }
+
+    if(*bitNumber==-1)
+        *bitNumber=7;
+    }
+    if(*bitNumber==-1)
+        *bitNumber=7;
     }
 }
 
-void JPGRead::addInTable(int &i, int &j, int *table, int index, int key,int *f){
+void JPGRead::addInTable(int *i, int *j, int index, int *f){
 
-    while((i<8)&&(j<8)){
+
+//    while((*i<8)&&(*j<8)){
         if (*f==0){
 
-            *table[index][i][j]=key;
+            if(index==0){
 
-            if(i!=7)
-                i+=1;
+            if(*i!=7)
+                *i=*i+1;
             else
-                j+=1;
+                *j=*j+1;
 
-            if(index==0)
+
                 *f=1;
-            continue;
+            }
+
+
+            return;
         }
         if(*f==1){
 
-            *table[index][i][j]=key;
+            if(index==0){
 
-            i--;
-            j++;
-            if(i==0 or j==7){
+            *i=*i-1;
+            *j=*j+1;
+            if(*i==0 or *j==7){
                 if(index==0)
                 *f=2;
             }
-            continue;
+            }
+            return;
         }
         if (*f==2){
 
-            *table[index][i][j]=key;
+            if(index==0){
 
-            if(j!=7)
-                j++;
+            if(*j!=7)
+                *j=*j+1;
             else
-                i++;
+                *i=*i+1;
 
             if(index==0)
             *f=3;
+            }
 
-            continue;
+            return;
         }
         if(*f==3){
 
-            *table[index][i][j]=key;
+            if(index==0){
 
-            i++;
-            j--;
+            *i=*i+1;
+            *j=*j-1;
 
-            if(j==0 or i==7)
+            if(*j==0 or *i==7)
 
                 if(index==0)
                 *f=0;
+            }
 
-            continue;
+            return;
         }
-    }
-
-    for(int i=0;i<8;i++){
-        for(int j=0;j<8;j++)
-            cout<<*table[index][i][j]<<" ";
-        cout<<endl;
-    }
-    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-
-
 }
 

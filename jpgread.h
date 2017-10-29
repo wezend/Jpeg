@@ -42,8 +42,7 @@ private:
     void readSOS();
     node* isOK(int *bitNumber,char *jpgC,int *concreteBit, int index);
     int koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits);
-    void addInTable(int &i, int &j, int *table, int index, int key, int *f);
-
+    void addInTable(int *i, int *j, int index, int *f);
 
 };
 
