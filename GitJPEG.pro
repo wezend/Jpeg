@@ -7,7 +7,8 @@ SOURCES += \
     jpg.cpp \
     jpgread.cpp \
     jpgwrite.cpp \
-    tree.cpp
+    tree.cpp \
+    main.cpp
 
 HEADERS += \
     jpg.h \
