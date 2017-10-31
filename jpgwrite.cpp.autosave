@@ -53,10 +53,12 @@ void JPGWrite::write()
 {
     f1 = fopen("D:\\test1.jpg","wb");
     char o[1000];
+    
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("D8");
     fwrite(&o, 2, 1, f1);
     for(int l = 0;l<jpg->dqtMark.jpgDQTmaxTableID;l++){
+    
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DB");
     o[2]=0;
@@ -109,6 +111,7 @@ void JPGWrite::write()
     }
     fwrite(&o, 64, 1, f1);
     }
+    
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C0");
     o[2]=0;
@@ -141,6 +144,7 @@ void JPGWrite::write()
         o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID;
         fwrite(&o, 3, 1, f1);
     }
+    
     string x; 
     for(int i = 0;i<4;i++){
     o[0]=HEX_TO_DEC("FF");
@@ -173,6 +177,7 @@ void JPGWrite::write()
     fwrite(&o,jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize,1,f1);
 
 }
+    
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DA");
     o[2]=0;
@@ -189,6 +194,7 @@ void JPGWrite::write()
         o[2]=jpg->sosMark.nonameBite3;
         fwrite(&o, 3,1,f1);
         //записываем пиксели
+        
         o[0]=HEX_TO_DEC("FF");
         o[1]=HEX_TO_DEC("D9");
         fwrite(&o, 2,1,f1);
