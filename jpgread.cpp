@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include <windef.h>
 #include"tree.h"
 #include "jpgread.h"
 
@@ -404,12 +405,13 @@ void JPGRead::readSOS()
     jpg->sosMark.jpgComponentsTable=new pair<int,int>[jpg->sosMark.jpgSosComponentValue];
     for(int i=0;i<jpg->sosMark.jpgSosComponentValue;i++){
         sosTmp=read_u8(jpg->pFile);
+        sosTmp=read_u8(jpg->pFile);
         jpg->sosMark.jpgComponentsTable[i].first=sosTmp>>4;
         jpg->sosMark.jpgComponentsTable[i].second=sosTmp&15;
     }
-    jpg->sosMark.nonameBite1=read_u16(jpg->pFile);
-    jpg->sosMark.nonameBite2=read_u16(jpg->pFile);
-    jpg->sosMark.nonameBite3=read_u16(jpg->pFile);
+    jpg->sosMark.nonameBite1=read_u8(jpg->pFile);
+    jpg->sosMark.nonameBite2=read_u8(jpg->pFile);
+    jpg->sosMark.nonameBite3=read_u8(jpg->pFile);
 }
 
 void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
