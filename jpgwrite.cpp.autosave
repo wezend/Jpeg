@@ -141,6 +141,7 @@ void JPGWrite::write()
         o[i]=jpg->sof0Mark.jpgSOF0WComponents[i].jpgQuantizationTableID;
         fwrite(&o, 3, 1, f1);
     }
+    string x; 
     for(int i = 0;i<4;i++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C4");
@@ -149,12 +150,27 @@ void JPGWrite::write()
     o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgTableType*10+jpg->dhtAllMark.jpgDHTtables[i]->jpgTableID;
     o[2]=jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;
     fwrite(&o, 3, 1, f1);
-    for(int i=0;i<4;i++) {
-        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
-        cout<<"~~~~~~~~~~~~~~"<<endl;
+    for(int i = 0;i<16;i++){
+        o[i]=0;
     }
-    //fwrite(&o, 16, 1, f1);
+    z = 0, f = 0;
+    for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++){
+        x=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second;
+        if( f == x.length()){
+            z++;
+        }
+        else
+        {
+            o[0]=z;
+            z=0;
+            f=x.length();
+        }
+    }
+    fwrite(&o, 16, 1, f1);
+    for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++){
+        o[j]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first;
+    }
+    fwrite(&o,jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize,1,f1);
 
 }
     o[0]=HEX_TO_DEC("FF");

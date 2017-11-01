@@ -17,7 +17,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 
-    JPG jpg("D:\\google.jpg");
+    JPG jpg("D:\\test.jpg");
     JPGRead jpgRead;
     jpgRead.setJpg(&jpg);
 
