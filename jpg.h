@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include <list>
 
 using namespace std;
 
@@ -79,6 +80,12 @@ typedef struct
 
 } JPGSOS;
 
+typedef struct
+{
+    list<char> jpgPicture;
+
+} JPGPICTURE;
+
 class JPG
 {
 public:
@@ -90,6 +97,7 @@ public:
     JPGSOF0 sof0Mark;
     JPGDHTALL dhtAllMark;
     JPGSOS sosMark;
+    JPGPICTURE picMark;
 };
 
 #endif // JPG_H

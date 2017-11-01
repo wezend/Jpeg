@@ -85,6 +85,32 @@ void JPGRead::read()
 
 
 
+//ВВОД ПИКЧИ
+    int cTmp;
+    while(true){
+        cTmp=read_u8(jpg->pFile);
+        if(cTmp==255){
+            cTmp=read_u8(jpg->pFile);
+            if(cTmp==217)
+                break;
+            else {
+                cTmp=255;
+            }
+        }
+        jpg->picMark.jpgPicture.push_back(cTmp);
+//        cout<<cTmp<<endl;
+    }
+//ВВОД ПИКЧИ
+
+
+
+//    for(int i=0;i<jpg->picMark.jpgPicture.size();i++){
+//        cout()
+
+//    }
+
+
+
     //я ненавижу эту срань. если кто то попросит
     //объяснить, что написано ниже,
     //я ему в лицо ударю.
@@ -92,42 +118,42 @@ void JPGRead::read()
     //приятного просмотра
 
 
-    node* noda;
-    int bitNumber=7;
-    char jpgC;
-    int concreteBit=0;
-    int index=0;
+//    node* noda;
+//    int bitNumber=7;
+//    char jpgC;
+//    int concreteBit=0;
+//    int index=0;
 
 
 
-    int x[2][8][8];
-    int f=2;
-    int n,m;
-    n=m=0;
-    int i=0,j=0;
-    bool acTableTrigger=0;
+//    int x[2][8][8];
+//    int f=2;
+//    int n,m;
+//    n=m=0;
+//    int i=0,j=0;
+//    bool acTableTrigger=0;
 
-    for(int n=0;n<8;n++){
-        for(int m=0;m<8;m++)
-            for(int tableType=0;tableType<2;tableType++ ){
+//    for(int n=0;n<8;n++){
+//        for(int m=0;m<8;m++)
+//            for(int tableType=0;tableType<2;tableType++ ){
 
-            noda=isOK(&bitNumber,&jpgC,&concreteBit, index);
-            if(noda->Key==-1)
-                break;
+//            noda=isOK(&bitNumber,&jpgC,&concreteBit, index);
+//            if(noda->Key==-1)
+//                break;
 
-            //заполнение первой таблицы
-            if(tableType==0){
-                addInTable(&i, &j,tableType, &f);
-                if(noda->Key==0){
-                    x[tableType][i][j]=noda->Key;
-                }
-                else {
-                    x[tableType][i][j]=koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key);
-                     }
-                }
+//            //заполнение первой таблицы
+//            if(tableType==0){
+//                addInTable(&i, &j,tableType, &f);
+//                if(noda->Key==0){
+//                    x[tableType][i][j]=noda->Key;
+//                }
+//                else {
+//                    x[tableType][i][j]=koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key);
+//                     }
+//                }
 
             //заполнение второй таблицы
-            if((tableType==1) && (acTableTrigger==0)){
+//            if((tableType==1) && (acTableTrigger==0)){
 //                if(noda->Key==0){
 //                    int i2=i;
 //                    int j2=j;
@@ -138,11 +164,11 @@ void JPGRead::read()
 //                    }
 //                    acTableTrigger==1;
 //                }
-            }
+//            }
 
-    }
+//    }
 
-}
+//}
 
 
     cout<<"to doooo"<<endl;
@@ -361,11 +387,11 @@ void JPGRead::readFFC4()
     }while(lastMark==65476);
 
   //  демонстрация работоспособности считывания FFC4
-    for(int i=0;i<4;i++) {
-        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
-        cout<<"~~~~~~~~~~~~~~"<<endl;
-    }
+//    for(int i=0;i<4;i++) {
+//        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
+//        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+//        cout<<"~~~~~~~~~~~~~~"<<endl;
+//    }
 
 
 }
