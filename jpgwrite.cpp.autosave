@@ -179,11 +179,11 @@ void JPGWrite::write()
     o[3]=jpg->sosMark.jpgSosLenght;
     o[4]=jpg->sosMark.jpgSosComponentValue;
     fwrite(&o, 5,1,f1);
-    //for(int i = 0;i<jpg->sosMark.jpgSosComponentValue;i++){
-       // o[0]=i+1;
-       // o[1]=jpg->sosMark.jpgComponentsTable[0].first*10+jpg->sosMark.jpgComponentsTable[0].second;
-        //fwrite(&o, 2,1,f1);
-   // }
+    for(int i = 0;i<jpg->sosMark.jpgSosComponentValue;i++){
+        o[0]=i+1;
+        o[1]=jpg->sosMark.jpgComponentsTable[0].first*10+jpg->sosMark.jpgComponentsTable[0].second;
+        fwrite(&o, 2,1,f1);
+    }
         o[0]=jpg->sosMark.nonameBite1;
         o[1]=jpg->sosMark.nonameBite2;
         o[2]=jpg->sosMark.nonameBite3;
