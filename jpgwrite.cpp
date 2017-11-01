@@ -51,7 +51,7 @@ return s;
 
 void JPGWrite::write()
 {
-    f1 = fopen("D:\\test2.jpg","wb");
+    f1 = fopen("D:\\test1.jpg","wb");
     char o[1000];
 
     o[0]=HEX_TO_DEC("FF");
@@ -195,11 +195,19 @@ void JPGWrite::write()
         o[1]=jpg->sosMark.nonameBite2;
         o[2]=jpg->sosMark.nonameBite3;
         fwrite(&o, 3,1,f1);
-        //записываем пиксели
+        for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++){
+           o[0]=*j;
+           fwrite(&o, 1,1,f1);
+           if(o[0]==255){
+               o[0]=0;
+               fwrite(&o,1,1,f1);
+           }
+        }
 
         o[0]=HEX_TO_DEC("FF");
         o[1]=HEX_TO_DEC("D9");
         fwrite(&o, 2,1,f1);
+        cout<<1;
 
 }
 
