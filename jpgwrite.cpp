@@ -58,6 +58,7 @@ void JPGWrite::write()
     o[1]=HEX_TO_DEC("D8");
     fwrite(&o, 2, 1, f1);
 
+
     for(int l = 0;l<jpg->dqtMark.jpgDQTmaxTableID;l++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DB");
@@ -118,22 +119,24 @@ void JPGWrite::write()
     o[3]=jpg->sof0Mark.jpgSOF0Lenght;
     o[4]=jpg->sof0Mark.jpgSOF0Precision;
     fwrite(&o, 5, 1, f1);
-    if(jpg->sof0Mark.jpgSOF0Height> 255){
-       o[0]=jpg->sof0Mark.jpgSOF0Height;
-       fwrite(&o, 1, 2, f1);
+    if(jpg->sof0Mark.jpgSOF0Height>HEX_TO_DEC("FF")){
+       o[0]=jpg->sof0Mark.jpgSOF0Height-255;
+       o[1]=jpg->sof0Mark.jpgSOF0Height;
+       fwrite(&o, 2, 2, f1);
     }
     else{
         o[0]=0;
         o[1]=jpg->sof0Mark.jpgSOF0Height;
         fwrite(&o, 2, 1, f1);
     }
-    if(jpg->sof0Mark.jpgSOF0Height> 255){
-       o[0]=jpg->sof0Mark.jpgSOF0Width;
-       fwrite(&o, 1, 2, f1);
+    if(jpg->sof0Mark.jpgSOF0Width>HEX_TO_DEC("FF")){
+       o[0]=jpg->sof0Mark.jpgSOF0Width-255;
+       o[1]=jpg->sof0Mark.jpgSOF0Width;
+       fwrite(&o, 2, 2, f1);
     }
     else{
         o[0]=0;
-        o[1]=jpg->sof0Mark.jpgSOF0Height;
+        o[1]=jpg->sof0Mark.jpgSOF0Width;
         fwrite(&o, 2, 1, f1);
     }
     o[0]=jpg->sof0Mark.jpgSOF0WComponentValue;
@@ -147,14 +150,16 @@ void JPGWrite::write()
 
     string x;
     int f,z;
+    char b=HEX_TO_DEC("FF");
     for(int i = 0;i<4;i++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C4");
     fwrite(&o, 2, 1, f1);
 
     if(jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght > 255){
-       o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
-       fwrite(&o, 1, 1, f1);
+       o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght-255;
+       o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
+       fwrite(&o, 2, 1, f1);
     }
     else{
         o[0]=0;
@@ -209,16 +214,17 @@ void JPGWrite::write()
         fwrite(&o, 3,1,f1);
         for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++){
            o[0]=*j;
-
-           fwrite(&o, 1,1,f1);
-           if(o[0]==255){
-               o[0]=0;
-               fwrite(&o,1,1,f1);
+           if(b==*j){
+               o[1]=0;
+               fwrite(&o,2,1,f1);
            }
+           else
+           fwrite(&o, 1,1,f1);
         }
         o[0]=HEX_TO_DEC("FF");
         o[1]=HEX_TO_DEC("D9");
         fwrite(&o, 2,1,f1);
+        fclose(f1);
 
 }
 
