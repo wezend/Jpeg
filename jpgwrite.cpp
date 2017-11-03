@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include<algorithm>
 
 
 using namespace std;
@@ -58,12 +59,13 @@ void JPGWrite::write()
     o[1]=HEX_TO_DEC("D8");
     fwrite(&o, 2, 1, f1);
 
-
     for(int l = 0;l<jpg->dqtMark.jpgDQTmaxTableID;l++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DB");
-    o[2]=0;
-    o[3]=jpg->dqtMark.jpgDQTLenght[l];
+
+    o[2]=jpg->dqtMark.jpgDQTLenght[l] >> 8;
+    o[3]=jpg->dqtMark.jpgDQTLenght[l] & 255;
+
     o[4]=l;
     fwrite(&o,5, 1, f1);
     int i = 0,j = 0,f = 2,z=0;
@@ -115,30 +117,22 @@ void JPGWrite::write()
 
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C0");
-    o[2]=0;
-    o[3]=jpg->sof0Mark.jpgSOF0Lenght;
+
+    o[2]=jpg->sof0Mark.jpgSOF0Lenght>>8;
+    o[3]=jpg->sof0Mark.jpgSOF0Lenght & 255;
+
+
     o[4]=jpg->sof0Mark.jpgSOF0Precision;
     fwrite(&o, 5, 1, f1);
-    if(jpg->sof0Mark.jpgSOF0Height>HEX_TO_DEC("FF")){
-       o[0]=jpg->sof0Mark.jpgSOF0Height-255;
-       o[1]=jpg->sof0Mark.jpgSOF0Height;
-       fwrite(&o, 2, 2, f1);
-    }
-    else{
-        o[0]=0;
-        o[1]=jpg->sof0Mark.jpgSOF0Height;
-        fwrite(&o, 2, 1, f1);
-    }
-    if(jpg->sof0Mark.jpgSOF0Width>HEX_TO_DEC("FF")){
-       o[0]=jpg->sof0Mark.jpgSOF0Width-255;
-       o[1]=jpg->sof0Mark.jpgSOF0Width;
-       fwrite(&o, 2, 2, f1);
-    }
-    else{
-        o[0]=0;
-        o[1]=jpg->sof0Mark.jpgSOF0Width;
-        fwrite(&o, 2, 1, f1);
-    }
+
+       o[0]=jpg->sof0Mark.jpgSOF0Height>>8;
+       o[1]=jpg->sof0Mark.jpgSOF0Height&255;
+       fwrite(&o, 2, 1, f1);
+
+       o[0]=jpg->sof0Mark.jpgSOF0Width>>8;
+       o[1]=jpg->sof0Mark.jpgSOF0Width&255;
+       fwrite(&o, 2, 1, f1);
+
     o[0]=jpg->sof0Mark.jpgSOF0WComponentValue;
     fwrite(&o, 1, 1, f1);
     for(int i = 0; i < jpg->sof0Mark.jpgSOF0WComponentValue;i++){
@@ -156,16 +150,11 @@ void JPGWrite::write()
     o[1]=HEX_TO_DEC("C4");
     fwrite(&o, 2, 1, f1);
 
-    if(jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght > 255){
-       o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght-255;
-       o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
-       fwrite(&o, 2, 1, f1);
-    }
-    else{
-        o[0]=0;
-        o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght;
-        fwrite(&o, 2, 1, f1);
-    }
+    o[0]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght>>8;
+    o[1]=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTLenght & 255;
+
+    fwrite(&o, 2, 1, f1);
+
 
     o[0]= jpg->dhtAllMark.jpgDHTtables[i]->jpgTableType<<4 | (jpg->dhtAllMark.jpgDHTtables[i]->jpgTableID & 15);
 
@@ -193,8 +182,10 @@ void JPGWrite::write()
 
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DA");
-    o[2]=0;
-    o[3]=jpg->sosMark.jpgSosLenght;
+
+    o[2]=jpg->sosMark.jpgSosLenght>>8;
+    o[3]=jpg->sosMark.jpgSosLenght & 255;
+
     o[4]=jpg->sosMark.jpgSosComponentValue;
     fwrite(&o, 5,1,f1);
 
@@ -212,6 +203,7 @@ void JPGWrite::write()
         o[1]=jpg->sosMark.nonameBite2;
         o[2]=jpg->sosMark.nonameBite3;
         fwrite(&o, 3,1,f1);
+
         for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++){
            o[0]=*j;
            if(b==*j){
@@ -221,10 +213,10 @@ void JPGWrite::write()
            else
            fwrite(&o, 1,1,f1);
         }
+
         o[0]=HEX_TO_DEC("FF");
         o[1]=HEX_TO_DEC("D9");
         fwrite(&o, 2,1,f1);
-        fclose(f1);
 
 }
 
