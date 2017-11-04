@@ -46,35 +46,35 @@ void YCbCr_RGB::ConvertYCbCrToRGB(){
                     for(int i=0;i<8;i++){
                         for(int jj=0;jj<8;jj++){
                             tmpYtables[ii][i][jj]=tmpP->jpgYtable[ii][i][jj] * jpg->dqtMark.jpgDQTtable[0][i][jj];
-                            cout<<dec<<tmpYtables[ii][i][jj]<<" ";
+//                            cout<<dec<<tmpYtables[ii][i][jj]<<" ";
                         }
-                        cout<<endl;
+//                        cout<<endl;
                     }
-                    cout<<endl;
+//                    cout<<endl;
                 }
 
 
                     for(int i=0;i<8;i++){
                         for(int jj=0;jj<8;jj++){
                             tmpCbTable[i][jj]=tmpP->jpgCb[i][jj] * jpg->dqtMark.jpgDQTtable[1][i][jj];
-                            cout<<dec<<tmpCbTable[i][jj]<<" ";
+//                            cout<<dec<<tmpCbTable[i][jj]<<" ";
                         }
-                    cout<<endl;
+//                    cout<<endl;
                     }
 
-                    cout<<endl;
+//                    cout<<endl;
 
                     for(int i=0;i<8;i++){
                         for(int jj=0;jj<8;jj++){
                              tmpCrTable[i][jj]=tmpP->jpgCr[i][jj] * jpg->dqtMark.jpgDQTtable[1][i][jj];
-                            cout<<dec<<tmpCrTable[i][jj]<<" ";
+//                            cout<<dec<<tmpCrTable[i][jj]<<" ";
                         }
-                    cout<<endl;
+//                    cout<<endl;
                     }
 
             }
 
-            cout<<"~~~~~~~~~~"<<endl;
+//            cout<<"~~~~~~~~~~"<<endl;
 
             double tmpYtable[8][8];
             double ci,cj;
@@ -92,9 +92,9 @@ void YCbCr_RGB::ConvertYCbCrToRGB(){
                 }
 
                 tmpYtable[i][j]=0.25*(ci*cj*tmpYtables[0][i][j]*cos(((2.0*i+1.0)*i*M_PI)/16.0)*cos(((2.0*j+1.0)*j*M_PI)/16.0));
-                cout <<tmpYtable[i][j]<<" ";
+//                cout <<tmpYtable[i][j]<<" ";
             }
-            cout<<endl;
+//            cout<<endl;
         }
 
 

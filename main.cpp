@@ -31,11 +31,8 @@ int main(int argc, char *argv[])
 
     jpgRead.read();
     jpgConverter.ConvertYCbCrToRGB();
-
     jpgWrite.write();
 
-    int t=0;
-    cout<<dec<<t-1;
 
 
 //    cout<<"~~~~"<<endl;

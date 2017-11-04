@@ -100,7 +100,7 @@ void JPGRead::read()
 //дешифровка изображения
     decodTables();
 
-    cout<<"to doooo"<<endl;
+//    cout<<"to doooo"<<endl;
 
 }
 
@@ -225,14 +225,14 @@ void JPGRead::readDqt()
     jpg->dqtMark.jpgDQTmaxTableID=t;
 
     //вывод таблиц квантования
-        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
-            for(int i=0; i<8;i++){
-                for(int j=0;j<8;j++)
-                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
-                cout<<endl;
-            }
-            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
-        }
+//        for(int r=0;r<jpg->dqtMark.jpgDQTmaxTableID;r++){
+//            for(int i=0; i<8;i++){
+//                for(int j=0;j<8;j++)
+//                    cout<<jpg->dqtMark.jpgDQTtable[r][i][j]<<" ";
+//                cout<<endl;
+//            }
+//            cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+//        }
 
 
 

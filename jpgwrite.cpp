@@ -53,12 +53,80 @@ return s;
 void JPGWrite::write()
 {
     f1 = fopen("D:\\test1.jpg","wb");
-    char o[1000];
+
 
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("D8");
     fwrite(&o, 2, 1, f1);
 
+    writeFFDB();
+
+    writeFFC0();
+
+    writeFFC4();
+
+    writeFFDA();
+
+
+//    vector<node*> nodeWeightList;
+
+//    JPGALLPICTABLES *tmpP;
+//    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+//        tmpP=*j;
+//        for(int ii=3;ii>0;ii--){
+//             tmpP->jpgYtable[ii][0][0]=tmpP->jpgYtable[ii][0][0] - tmpP->jpgYtable[ii-1][0][0];
+//        }
+
+//        for(int i=0;i<4;i++){
+//            bool newTrigger=0;
+//             node* y=*f;
+//            for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+//                y=*f;
+//                if(tmpP->jpgYtable[i][0][0]==y->weight)
+
+
+//            }
+
+//        }
+
+
+//    }
+
+
+
+
+         char b=HEX_TO_DEC("FF");
+        for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++){
+           o[0]=*j;
+           if(b==*j){
+               o[1]=0;
+               fwrite(&o,2,1,f1);
+           }
+           else
+           fwrite(&o, 1,1,f1);
+        }
+
+        o[0]=HEX_TO_DEC("FF");
+        o[1]=HEX_TO_DEC("D9");
+        fwrite(&o, 2,1,f1);
+
+
+
+
+
+}
+
+JPG *JPGWrite::getJpg() const
+{
+    return jpg;
+}
+
+void JPGWrite::setJpg(JPG *value)
+{
+    jpg = value;
+}
+
+void JPGWrite::writeFFDB(){
     for(int l = 0;l<jpg->dqtMark.jpgDQTmaxTableID;l++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DB");
@@ -114,6 +182,9 @@ void JPGWrite::write()
     }
     fwrite(&o, 64, 1, f1);
     }
+}
+
+void JPGWrite::writeFFC0(){
 
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C0");
@@ -142,9 +213,12 @@ void JPGWrite::write()
         fwrite(&o, 3, 1, f1);
     }
 
+}
+
+void JPGWrite::writeFFC4(){
     string x;
     int f,z;
-    char b=HEX_TO_DEC("FF");
+
     for(int i = 0;i<4;i++){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("C4");
@@ -179,7 +253,9 @@ void JPGWrite::write()
     fwrite(&o,jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize,1,f1);
 
 }
+}
 
+void JPGWrite::writeFFDA(){
     o[0]=HEX_TO_DEC("FF");
     o[1]=HEX_TO_DEC("DA");
 
@@ -203,29 +279,5 @@ void JPGWrite::write()
         o[1]=jpg->sosMark.nonameBite2;
         o[2]=jpg->sosMark.nonameBite3;
         fwrite(&o, 3,1,f1);
-
-        for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++){
-           o[0]=*j;
-           if(b==*j){
-               o[1]=0;
-               fwrite(&o,2,1,f1);
-           }
-           else
-           fwrite(&o, 1,1,f1);
-        }
-
-        o[0]=HEX_TO_DEC("FF");
-        o[1]=HEX_TO_DEC("D9");
-        fwrite(&o, 2,1,f1);
-
 }
 
-JPG *JPGWrite::getJpg() const
-{
-    return jpg;
-}
-
-void JPGWrite::setJpg(JPG *value)
-{
-    jpg = value;
-}

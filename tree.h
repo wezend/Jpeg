@@ -8,6 +8,7 @@ int Key=-1;
 node *Left=0;
 node *Right=0;
 node *Back=0;
+int weight=0;
 
 };
 

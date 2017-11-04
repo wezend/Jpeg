@@ -29,6 +29,11 @@ public:
 private:
     JPG *jpg;
     FILE *f1;
+    char o[1000];
+    void writeFFDB();
+    void writeFFC0();
+    void writeFFC4();
+    void writeFFDA();
 };
 
 #endif // JPGWRITE_H
