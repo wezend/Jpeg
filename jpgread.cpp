@@ -12,6 +12,8 @@
 #include <windef.h>
 #include"tree.h"
 #include "jpgread.h"
+#include <iomanip>
+
 
 
 using namespace std;
@@ -101,30 +103,39 @@ void JPGRead::read()
 
 //дешифровка изображения
 
-    node* tmpNode;
     jpgPicIterator=jpg->picMark.jpgPicture.begin();
-    int x[8][8];
+
+    JPGALLPICTABLES *tmpPicTables=new JPGALLPICTABLES;
+
+    for(int ii=0;ii<4;ii++){
     int indexID=0;
 
-
-    tmpNode=findNode(jpg->dhtAllMark.jpgDHTtables[indexID]->jpgDHTtreesRoots);
-    x[0][0]=DCtableAlgorithm(tmpNode);
+    readTmpTable.x[0][0]=DCtableAlgorithm(findNode(jpg->dhtAllMark.jpgDHTtables[indexID]->jpgDHTtreesRoots));
     indexID++;
-    while (true) {
-        //заполняем таблицу АС кэфами
 
-    }
+    readTmpTable.z=2;
+    readTmpTable.f=2;
+    readTmpTable.n=0;
+    readTmpTable.m=0;
 
-
-
+    addACInTable(jpg->dhtAllMark.jpgDHTtables[indexID]->jpgDHTtreesRoots);
 
 //    int s;
 //    for(int i=0;i<8;i++){
 //        s=getNewBit();
 //        cout<<s<<"  ";
 //    }
-
-    cout<<x[0][0]<<endl;
+    cout<<"# "<<ii<<endl;
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++){
+            tmpPicTables->jpgYtable[ii][i][j]=readTmpTable.x[i][j];
+            readTmpTable.x[i][j]=0;
+            cout<<dec<<setw(2)<<tmpPicTables->jpgYtable[ii][i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
+    }
 
     for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++)
     {
@@ -435,46 +446,46 @@ void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 
 }
 
-//node* JPGRead::isOK(){
+/*node* JPGRead::isOK(){
 
-   // node* tmpNode;
+    node* tmpNode;
 
-    //пофиксить [0] на конкретную таблицу в зависимости от кэфов
-    //tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+    пофиксить [0] на конкретную таблицу в зависимости от кэфов
+    tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
 
-//    while (true) {
-//        if(*bitNumber==-1)
-//        *jpgC=read_u8(jpg->pFile);
-//        if(*jpgC==255){
-//            *jpgC=read_u8(jpg->pFile);
-//                if(*jpgC==217){
-//                    tmpNode->Key=-1;
-//                    return tmpNode;
-//                    }
-//                }
+    while (true) {
+        if(*bitNumber==-1)
+        *jpgC=read_u8(jpg->pFile);
+        if(*jpgC==255){
+            *jpgC=read_u8(jpg->pFile);
+                if(*jpgC==217){
+                    tmpNode->Key=-1;
+                    return tmpNode;
+                    }
+                }
 
-//        if(*bitNumber==-1)
-//            *bitNumber=7;
+        if(*bitNumber==-1)
+            *bitNumber=7;
 
-//        while (*bitNumber!=-1) {
-//            *concreteBit=(*jpgC >> *bitNumber)& 0x01;
+        while (*bitNumber!=-1) {
+            *concreteBit=(*jpgC >> *bitNumber)& 0x01;
 
-//           //cout<<concreteBit<<"    ";
+           //cout<<concreteBit<<"    ";
 
 
-//            if(*concreteBit){
-//                 tmpNode=tmpNode->Right;
-//            }else {
-//                tmpNode=tmpNode->Left;
-//            }
+            if(*concreteBit){
+                 tmpNode=tmpNode->Right;
+            }else {
+                tmpNode=tmpNode->Left;
+            }
 
-//            *bitNumber=*bitNumber-1;
-//            if(tmpNode->Key!=-1)
-//                return tmpNode;
-//        }
-//    }
+            *bitNumber=*bitNumber-1;
+            if(tmpNode->Key!=-1)
+                return tmpNode;
+        }
+    }
 
-//}
+}*/
 
 int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits){
 
@@ -601,7 +612,6 @@ void JPGRead::addInTable(int *i, int *j, int index, int *f){
 
 
 
-
 char JPGRead::getNewByte(){
     char tmp= *jpgPicIterator;
     jpgPicIterator++;
@@ -611,20 +621,25 @@ char JPGRead::getNewByte(){
 
 int JPGRead::getNewBit(){
 
+     if(bitCounter<0){
+         tmpPicByte=getNewByte();
+     }
+
      int concreteBit=( tmpPicByte >> bitCounter) & 0x01;
+//     cout<<"Bit= "<<concreteBit<<"; BitNumber="<<bitCounter<<endl;
      bitCounter--;
+
+
      return concreteBit;
 }
 
 node* JPGRead::findNode(node *root){
-    node* tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
-    //tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+    node* tmpNode;
+    tmpNode=root;
     int tmpPicBit=0;
     while (true)
         {
-        if(bitCounter<0){
-            tmpPicByte=getNewByte();
-        }
+
         tmpPicBit=getNewBit();
 
         if(tmpPicBit){
@@ -633,7 +648,7 @@ node* JPGRead::findNode(node *root){
             tmpNode=tmpNode->Left;
         }
 
-        if(tmpNode->Key>0)
+        if(tmpNode->Key>=0)
             return tmpNode;
 
 
@@ -663,4 +678,117 @@ int JPGRead::DCtableAlgorithm(node* tmpNode){
         }
     }
      return value;
+}
+
+int JPGRead::ACtableAlgorithm(int OriginalLenth){
+
+    int lenth=OriginalLenth;
+    int value=0;
+
+    if(lenth!=0){
+        bool isFirst=1;
+        int firstBit=0;
+        int concreteBit;
+        while (lenth>0) {
+
+            concreteBit=getNewBit();
+            if(isFirst){
+                firstBit=concreteBit;
+                isFirst=0;
+            }
+            value=value<<1;
+            value=value|concreteBit;
+            lenth--;
+        }
+
+        if(firstBit==0){
+            value=value-pow(2,OriginalLenth)+1;
+        }
+    }
+     return value;
+}
+
+void JPGRead::addACInTable(node* originalRoot){
+
+    node* root=originalRoot;
+    do{
+
+    node* tmpNode=findNode(root);
+    int lenth=tmpNode->Key & 15;
+    int zeroCounter=tmpNode->Key >> 4;
+
+    if(tmpNode->Key==0){
+        do{
+            addInACTable(0);
+        }while(readTmpTable.z!=65);
+
+    }else{
+    for(int i=0;i<zeroCounter;i++){
+        addInACTable(0);
+    }
+    addInACTable(ACtableAlgorithm(lenth));
+    }
+
+    }while(readTmpTable.z!=65);
+}
+
+void JPGRead::addInACTable(int value){
+
+
+
+        if (readTmpTable.f==0){
+            if(readTmpTable.n!=7)
+                readTmpTable.n+=1;
+            else
+                readTmpTable.m+=1;
+            readTmpTable.f=1;
+
+            readTmpTable.x[readTmpTable.n][readTmpTable.m]=value;
+//            cout<<"f= "<<readTmpTable.f<<"; x["<<readTmpTable.n<<"]["<<readTmpTable.m<<"]= "<<value<<endl;
+
+
+            readTmpTable.z+=1;
+
+            return;
+        }
+        if(readTmpTable.f==1){
+            readTmpTable.n-=1;
+            readTmpTable.m+=1;
+            if(readTmpTable.n==0 or readTmpTable.m==7)
+                {readTmpTable.f=2;}
+
+            readTmpTable.x[readTmpTable.n][readTmpTable.m]=value;
+//            cout<<"f= "<<readTmpTable.f<<"; x["<<readTmpTable.n<<"]["<<readTmpTable.m<<"]= "<<value<<endl;
+
+
+            readTmpTable.z+=1;
+            return;
+        }
+
+        if (readTmpTable.f==2){
+            if(readTmpTable.m!=7)
+                readTmpTable.m+=1;
+            else
+                readTmpTable.n+=1;
+
+            readTmpTable.x[readTmpTable.n][readTmpTable.m]=value;
+//            cout<<"f= "<<readTmpTable.f<<"; x["<<readTmpTable.n<<"]["<<readTmpTable.m<<"]= "<<value<<endl;
+
+
+            readTmpTable.z+=1;
+            readTmpTable.f=3;
+            return;
+        }
+        if(readTmpTable.f==3){
+            readTmpTable.n+=1;
+            readTmpTable.m-=1;
+            if(readTmpTable.m==0 or readTmpTable.n==7)
+                readTmpTable.f=0;
+
+            readTmpTable.x[readTmpTable.n][readTmpTable.m]=value;
+//            cout<<"f= "<<readTmpTable.f<<"; x["<<readTmpTable.n<<"]["<<readTmpTable.m<<"]= "<<value<<endl;
+
+            readTmpTable.z+=1;
+            return;
+        }
 }

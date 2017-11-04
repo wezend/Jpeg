@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     jpgRead.read();
     jpgWrite.write();
 
+    int t=0;
+    cout<<dec<<t-1;
+
 
 //    cout<<"~~~~"<<endl;
 //    JPG pic1("D:\\test19.jpg");

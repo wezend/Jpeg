@@ -21,6 +21,15 @@ static unsigned short read_u16(FILE *fp);
 static unsigned int   read_u32(FILE *fp);
 static int            read_s32(FILE *fp);
 
+typedef struct
+{
+    int z=0;
+    int f=0;
+    int n=0;
+    int m=0;
+    int x[8][8];
+} globlalTable;
+
 
 class JPGRead
 {
@@ -33,6 +42,7 @@ public:
 private:
     JPG *jpg;
     int lastMark;
+    globlalTable readTmpTable;
 
     char tmpPicByte;
     int bitCounter=-1;
@@ -54,6 +64,9 @@ private:
     node *findNode(node *root);
 
     int DCtableAlgorithm(node *tmpNode);
+    int ACtableAlgorithm(int OriginalLenth);
+    void addInACTable(int value);
+    void addACInTable(node *originalRoot);
 };
 
 void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);

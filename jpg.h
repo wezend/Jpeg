@@ -11,6 +11,7 @@
 #include <string.h>
 #include <math.h>
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -82,7 +83,19 @@ typedef struct
 
 typedef struct
 {
+    int jpgYtable[4][8][8];
+
+    int jpgRteable[8][8];
+    int jpgGtable[8][8];
+    int jpgBtable[8][8];
+
+
+} JPGALLPICTABLES;
+
+typedef struct
+{
     list<char> jpgPicture;
+    vector<JPGALLPICTABLES> jpgAllPicTables;
 
 } JPGPICTURE;
 
