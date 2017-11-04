@@ -84,8 +84,10 @@ typedef struct
 typedef struct
 {
     int jpgYtable[4][8][8];
+    int jpgCb[8][8];
+    int jpgCr[8][8];
 
-    int jpgRteable[8][8];
+    int jpgRtable[8][8];
     int jpgGtable[8][8];
     int jpgBtable[8][8];
 
@@ -95,7 +97,7 @@ typedef struct
 typedef struct
 {
     list<char> jpgPicture;
-    vector<JPGALLPICTABLES> jpgAllPicTables;
+    vector<JPGALLPICTABLES*> jpgAllPicTables;
 
 } JPGPICTURE;
 

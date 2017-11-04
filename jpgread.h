@@ -67,6 +67,7 @@ private:
     int ACtableAlgorithm(int OriginalLenth);
     void addInACTable(int value);
     void addACInTable(node *originalRoot);
+    void decodTables();
 };
 
 void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);

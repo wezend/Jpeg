@@ -11,6 +11,7 @@
 #include "jpg.h"
 #include "jpgread.h"
 #include "jpgwrite.h"
+#include "ycbcr_rgb.h"
 
 using namespace std;
 
@@ -24,8 +25,13 @@ int main(int argc, char *argv[])
     JPGWrite jpgWrite;
     jpgWrite.setJpg(&jpg);
 
+    YCbCr_RGB jpgConverter;
+    jpgConverter.setJpg(&jpg);
+
 
     jpgRead.read();
+    jpgConverter.ConvertYCbCrToRGB();
+
     jpgWrite.write();
 
     int t=0;

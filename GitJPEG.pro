@@ -8,10 +8,12 @@ SOURCES += \
     jpgread.cpp \
     jpgwrite.cpp \
     tree.cpp \
-    main.cpp
+    main.cpp \
+    ycbcr_rgb.cpp
 
 HEADERS += \
     jpg.h \
     jpgread.h \
     jpgwrite.h \
-    tree.h
+    tree.h \
+    ycbcr_rgb.h
