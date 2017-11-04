@@ -10,3 +10,17 @@ tmp->Back=x;
 key=-2;
 return tmp;
 }
+
+TREE::~TREE()
+{
+//    recDelTree(this->root);
+}
+
+void TREE::recDelTree(node* tmp){
+//    if(tmp->Left)
+//        recDelTree(tmp->Left);
+//    if(tmp->Right)
+//        recDelTree(tmp->Right);
+//    delete tmp;
+}
+

@@ -28,22 +28,32 @@ public:
     JPGRead();
     void read();
 
-
-
     JPG *getJpg() const;
     void setJpg(JPG *value);
 private:
     JPG *jpg;
     int lastMark;
+
+    char tmpPicByte;
+    int bitCounter=-1;
+
     void readComment();
     void readDqt();
     void readSOF0();
     void readFFC4();
     void readSOS();
+    void readPic();
+
     node* isOK(int *bitNumber,char *jpgC,int *concreteBit, int index);
     int koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits);
     void addInTable(int *i, int *j, int index, int *f);
+    char getNewByte();
 
+    list<char>::iterator jpgPicIterator;
+    int getNewBit();
+    node *findNode(node *root);
+
+    int DCtableAlgorithm(node *tmpNode);
 };
 
 void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);

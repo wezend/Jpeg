@@ -98,6 +98,7 @@ public:
     JPGDHTALL dhtAllMark;
     JPGSOS sosMark;
     JPGPICTURE picMark;
+    ~JPG();
 };
 
 #endif // JPG_H

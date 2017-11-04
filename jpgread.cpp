@@ -48,10 +48,13 @@ void JPGRead::read()
 
    //тест на наличие таблиц квантования;
 
-    if (lastMark!=65499){
+    if (lastMark!=65499)
+        {
         cout<<"Error! It is not DQT tables! "<<lastMark<<endl;
         return;
-    }else{
+    }
+    else
+        {
         readDqt();
     }
 
@@ -60,7 +63,9 @@ void JPGRead::read()
         {
             cout<<"Error! It is not SOF0 marker!"<<endl;
             return;
-    }else {
+    }
+    else
+        {
         readSOF0();
     }
 
@@ -70,7 +75,9 @@ void JPGRead::read()
         {
             cout<<"Error! It is not FFC4 marker!"<<endl;
             return;
-    }else {
+    }
+    else
+        {
         readFFC4();
     }
 
@@ -79,96 +86,58 @@ void JPGRead::read()
         {
             cout<<"Error! It is not SOS marker!"<<lastMark<<endl;
             return;
-    }else {
+    }
+    else
+        {
         readSOS();
     }
 
 
 
-//ВВОД ПИКЧИ
-    int cTmp;
-    while(true){
-        cTmp=read_u8(jpg->pFile);
-        if(cTmp==255){
-            cTmp=read_u8(jpg->pFile);
-            if(cTmp==217)
-                break;
-            else {
-                cTmp=255;
-            }
-        }
-        jpg->picMark.jpgPicture.push_back(cTmp);
-//        cout<<cTmp<<endl;
+//ВВОД изображения
+    readPic();
+
+
+
+//дешифровка изображения
+
+    node* tmpNode;
+    jpgPicIterator=jpg->picMark.jpgPicture.begin();
+    int x[8][8];
+    int indexID=0;
+
+
+    tmpNode=findNode(jpg->dhtAllMark.jpgDHTtables[indexID]->jpgDHTtreesRoots);
+    x[0][0]=DCtableAlgorithm(tmpNode);
+    indexID++;
+    while (true) {
+        //заполняем таблицу АС кэфами
+
     }
-//ВВОД ПИКЧИ
 
 
 
-//    for(int i=0;i<jpg->picMark.jpgPicture.size();i++){
-//        cout()
 
+//    int s;
+//    for(int i=0;i<8;i++){
+//        s=getNewBit();
+//        cout<<s<<"  ";
 //    }
 
+    cout<<x[0][0]<<endl;
 
-
-    //я ненавижу этот код. если кто то попросит
-    //объяснить, что написано ниже,
-    //я ему в лицо ударю.
-    //Я НЕ ПОНИМАЮ КАК ЭТО РАБОТЕТ, ПОТОМУ ЧТО ЭТО ДИЧЬ.(но я это писал)
-    //приятного просмотра
-
-
-//    node* noda;
-//    int bitNumber=7;
-//    char jpgC;
-//    int concreteBit=0;
-//    int index=0;
+    for(list<char>::iterator j = jpg->picMark.jpgPicture.begin();j!=jpg->picMark.jpgPicture.end();j++)
+    {
+        tmpPicByte=*j;
+        cout<<tmpPicByte<<" ";
+    }
 
 
 
-//    int x[2][8][8];
-//    int f=2;
-//    int n,m;
-//    n=m=0;
-//    int i=0,j=0;
-//    bool acTableTrigger=0;
 
-//    for(int n=0;n<8;n++){
-//        for(int m=0;m<8;m++)
-//            for(int tableType=0;tableType<2;tableType++ ){
 
-//            noda=isOK(&bitNumber,&jpgC,&concreteBit, index);
-//            if(noda->Key==-1)
-//                break;
 
-//            //заполнение первой таблицы
-//            if(tableType==0){
-//                addInTable(&i, &j,tableType, &f);
-//                if(noda->Key==0){
-//                    x[tableType][i][j]=noda->Key;
-//                }
-//                else {
-//                    x[tableType][i][j]=koefficient(&bitNumber,&jpgC,&concreteBit,noda->Key);
-//                     }
-//                }
 
-            //заполнение второй таблицы
-//            if((tableType==1) && (acTableTrigger==0)){
-//                if(noda->Key==0){
-//                    int i2=i;
-//                    int j2=j;
-//                    int f2=f;
-//                    while((i2<8)&&(j2<8)){
-//                        addInTable(&i2, &j2,tableType, &f2);
-//                        x[tableType][i2][j2]=noda->Key;
-//                    }
-//                    acTableTrigger==1;
-//                }
-//            }
-
-//    }
-
-//}
 
 
     cout<<"to doooo"<<endl;
@@ -386,12 +355,12 @@ void JPGRead::readFFC4()
     lastMark=read_u16(jpg->pFile);
     }while(lastMark==65476);
 
-  //  демонстрация работоспособности считывания FFC4
-//    for(int i=0;i<4;i++) {
-//        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-//        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
-//        cout<<"~~~~~~~~~~~~~~"<<endl;
-//    }
+//    демонстрация работоспособности считывания FFC4
+    for(int i=0;i<4;i++) {
+        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
+        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+        cout<<"~~~~~~~~~~~~~~"<<endl;
+    }
 
 
 }
@@ -411,6 +380,24 @@ void JPGRead::readSOS()
     jpg->sosMark.nonameBite1=read_u8(jpg->pFile);
     jpg->sosMark.nonameBite2=read_u8(jpg->pFile);
     jpg->sosMark.nonameBite3=read_u8(jpg->pFile);
+}
+
+void JPGRead::readPic(){
+    int cTmp;
+    while(true){
+        cTmp=read_u8(jpg->pFile);
+        if(cTmp==255){
+            cTmp=read_u8(jpg->pFile);
+            if(cTmp==217)
+                break;
+            else {
+                cTmp=255;
+            }
+        }
+        jpg->picMark.jpgPicture.push_back(cTmp);
+//        cout<<cTmp<<endl;
+    }
+
 }
 
 void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
@@ -448,45 +435,46 @@ void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 
 }
 
-node* JPGRead::isOK(int *bitNumber,char *jpgC,int *concreteBit,int index){
+//node* JPGRead::isOK(){
 
-    node* tmpNode;
+   // node* tmpNode;
 
     //пофиксить [0] на конкретную таблицу в зависимости от кэфов
-    tmpNode=jpg->dhtAllMark.jpgDHTtables[index]->jpgDHTtreesRoots;
+    //tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
 
-    while (true) {
-        if(*bitNumber==-1)
-        *jpgC=read_u8(jpg->pFile);
-        if(*jpgC==255){
-            *jpgC=read_u8(jpg->pFile);
-                if(*jpgC==217){
-                    tmpNode->Key=-1;
-                    return tmpNode;
-                    }
-                }
+//    while (true) {
+//        if(*bitNumber==-1)
+//        *jpgC=read_u8(jpg->pFile);
+//        if(*jpgC==255){
+//            *jpgC=read_u8(jpg->pFile);
+//                if(*jpgC==217){
+//                    tmpNode->Key=-1;
+//                    return tmpNode;
+//                    }
+//                }
 
-        if(*bitNumber==-1)
-            *bitNumber=7;
+//        if(*bitNumber==-1)
+//            *bitNumber=7;
 
-        while (*bitNumber!=-1) {
-            *concreteBit=(*jpgC >> *bitNumber)& 0x01;
+//        while (*bitNumber!=-1) {
+//            *concreteBit=(*jpgC >> *bitNumber)& 0x01;
 
-           //cout<<concreteBit<<"    ";
+//           //cout<<concreteBit<<"    ";
 
 
-            if(*concreteBit){
-                 tmpNode=tmpNode->Right;
-            }else {
-                tmpNode=tmpNode->Left;
-            }
+//            if(*concreteBit){
+//                 tmpNode=tmpNode->Right;
+//            }else {
+//                tmpNode=tmpNode->Left;
+//            }
 
-            *bitNumber=*bitNumber-1;
-            if(tmpNode->Key!=-1)
-                return tmpNode;
-        }
-    }
-}
+//            *bitNumber=*bitNumber-1;
+//            if(tmpNode->Key!=-1)
+//                return tmpNode;
+//        }
+//    }
+
+//}
 
 int JPGRead::koefficient(int *bitNumber,char *jpgC,int *concreteBit, int countOfBits){
 
@@ -611,3 +599,68 @@ void JPGRead::addInTable(int *i, int *j, int index, int *f){
         }
 }
 
+
+
+
+char JPGRead::getNewByte(){
+    char tmp= *jpgPicIterator;
+    jpgPicIterator++;
+    bitCounter=7;
+    return tmp;
+}
+
+int JPGRead::getNewBit(){
+
+     int concreteBit=( tmpPicByte >> bitCounter) & 0x01;
+     bitCounter--;
+     return concreteBit;
+}
+
+node* JPGRead::findNode(node *root){
+    node* tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+    //tmpNode=jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots;
+    int tmpPicBit=0;
+    while (true)
+        {
+        if(bitCounter<0){
+            tmpPicByte=getNewByte();
+        }
+        tmpPicBit=getNewBit();
+
+        if(tmpPicBit){
+             tmpNode=tmpNode->Right;
+        }else {
+            tmpNode=tmpNode->Left;
+        }
+
+        if(tmpNode->Key>0)
+            return tmpNode;
+
+
+    }
+}
+
+int JPGRead::DCtableAlgorithm(node* tmpNode){
+    int lenth=tmpNode->Key;
+    int value=0;
+    if(lenth!=0){
+        bool isFirst=1;
+        int firstBit=0;
+        int concreteBit;
+        while (lenth>0) {
+            concreteBit=getNewBit();
+            if(isFirst){
+                firstBit=concreteBit;
+                isFirst=0;
+            }
+            value=value<<1;
+            value=value|concreteBit;
+            lenth--;
+        }
+
+        if(firstBit==0){
+            value=value-pow(2,tmpNode->Key)+1;
+        }
+    }
+     return value;
+}

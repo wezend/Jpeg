@@ -8,6 +8,7 @@ int Key=-1;
 node *Left=0;
 node *Right=0;
 node *Back=0;
+
 };
 
 
@@ -16,6 +17,9 @@ public:
 node *root;
 TREE(){root=new node;}
 node *addNode(int key, int lvl,node * x);
+
+~TREE();
+void recDelTree(node* tmp);
 };
 
 
