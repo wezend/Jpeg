@@ -68,29 +68,145 @@ void JPGWrite::write()
     writeFFDA();
 
 
-//    vector<node*> nodeWeightList;
+    JPGALLPICTABLES *tmpP;
+    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+        tmpP=*j;
+        for(int ii=3;ii>0;ii--){
+             tmpP->jpgYtable[ii][0][0]=tmpP->jpgYtable[ii][0][0] - tmpP->jpgYtable[ii-1][0][0];
+//             if(tmpP->jpgYtable[ii][0][0]<0)
+//                cout<<tmpP->jpgYtable[ii][0][0]<<" "<<endl;
+        }
+//        if(tmpP->jpgYtable[0][0][0]<0)
+//            cout<<tmpP->jpgYtable[0][0][0]<<" "<<endl;
+    }
 
-//    JPGALLPICTABLES *tmpP;
-//    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
-//        tmpP=*j;
-//        for(int ii=3;ii>0;ii--){
-//             tmpP->jpgYtable[ii][0][0]=tmpP->jpgYtable[ii][0][0] - tmpP->jpgYtable[ii-1][0][0];
-//        }
+    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+        tmpP=*j;
 
-//        for(int i=0;i<4;i++){
-//            bool newTrigger=0;
-//             node* y=*f;
-//            for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-//                y=*f;
-//                if(tmpP->jpgYtable[i][0][0]==y->weight)
+        for(int i=0;i<4;i++){
+            addInNodeVector(tmpP->jpgYtable[i][0][0]);
+        }
+
+    }
 
 
-//            }
+    //вывод вектора нод для будущего дерева хаффмана
 
-//        }
+//    char tmpChar;
+
+//    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+//         tmpNode=*f;
+//         itt=tmpNode->Key&255;
 
 
+//         cout<<hex<<itt<<" x "<<dec<<tmpNode->weight<<endl;
 //    }
+
+//    cout<<"~~~~~~~~~~~~"<<endl;
+
+    sort(nodeWeightList.begin(),nodeWeightList.end(),[](const node* a, const node* b){
+        return a->weight < b->weight;
+    });
+
+
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         __int16 itt=tmpNode->Key&255;
+         cout<<dec<<itt<<" x "<<dec<<tmpNode->weight<<endl;
+    }
+
+        node* leftNode;
+        node* rightNode;
+
+        cout<<"~~~~~"<<endl;
+
+    vector<node*> tmpVector;
+
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         tmpVector.push_back(tmpNode);
+    }
+
+    while (tmpVector.size()>1) {
+
+        cout<<tmpVector.size()<<endl;
+
+
+        sort(tmpVector.begin(),tmpVector.end(),[](const node* a, const node* b){
+            return a->weight < b->weight;
+        });
+
+
+//        node* tmpNoded;
+//        __int16 itt;
+
+//        for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+//             tmpNoded=*f;
+//             itt=tmpNoded->Key&255;
+//             cout<<hex<<itt<<" x "<<dec<<tmpNoded->weight<<endl;
+//        }
+
+        leftNode=*nodeWeightList.begin();
+        nodeWeightList.begin()++;
+        rightNode=*nodeWeightList.begin();
+
+
+        cout<<dec<<leftNode->weight<<" xx "<<rightNode->weight<<endl;
+
+
+        node* tmpNode=new node;
+
+        tmpNode->Left=leftNode;
+        tmpNode->Right=rightNode;
+        tmpNode->weight=leftNode->weight + rightNode->weight;
+
+        node* bN=*nodeWeightList.begin();
+        bN=tmpNode;
+
+        nodeWeightList.erase(nodeWeightList.begin()+1);
+    }
+
+//    cout<<"45454";
+        node* tmpNode;
+        __int16 itt;
+
+        for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+             tmpNode=*f;
+             itt=tmpNode->Key&255;
+             cout<<hex<<itt<<" x "<<dec<<tmpNode->weight<<endl;
+        }
+
+
+    treeValk(jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots,*nodeWeightList.begin());
+
+
+
+
+
+
+
+    //        for(int i=0;i<4;i++){
+    //            bool newTrigger=1;
+    //             node* tmpNodeWeightList;
+    //            for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+    //                tmpNodeWeightList=*f;
+
+
+
+
+    //                if(tmpP->jpgYtable[i][0][0]==tmpNodeWeightList->weight)
+    //                {
+
+    //                }
+
+
+    //            }
+
+    //        }
+
+//    tableElementLenth(5);
+//    tmpP=*jpg->picMark.jpgAllPicTables.begin();
+//    tableElementLenth(tmpP->jpgYtable[0][0][0]);
 
 
 
@@ -281,3 +397,71 @@ void JPGWrite::writeFFDA(){
         fwrite(&o, 3,1,f1);
 }
 
+int JPGWrite::tableElementLenth(int originalValue){
+
+//    cout<<value<<"#"<<endl;
+    int value=originalValue;
+
+    int lenth=0;
+    int tmpBit=0;
+    if(value<0)
+        value*=-1;
+
+    char curretByte=value;
+
+    for(int i=0;i<8;i++){
+        tmpBit=(curretByte >> i) & 0x01;
+        cout<<tmpBit<<" ";
+        if(tmpBit==1)
+                lenth=i+1;
+
+    }
+    cout<<endl;
+
+        return lenth;
+
+//    cout<<dec<<lenth<<endl;
+}
+
+void JPGWrite::addInNodeVector(int value){
+
+    node* tmpNode;
+    bool newNodeTrigger=1;
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+        tmpNode=*f;
+
+        if(tmpNode->Key == tableElementLenth(value) ){
+            tmpNode->weight+=1;
+//            cout<<"Add in node weight "<<tmpNode->Key<<" "<<tmpNode->weight<<endl;
+            return;
+        }
+    }
+
+    if(newNodeTrigger){
+//                cout<<tmpP->jpgYtable[i][0][0]<<"!"<<endl;
+        node* newNode=new node;
+        newNode->Key= tableElementLenth( value );
+        newNode->weight=1;
+        nodeWeightList.push_back(newNode);
+
+//        cout<<"New node "<<newNode->Key<<endl;
+
+        return;
+    }
+}
+
+//void JPGWrite::sortNodeVector(){
+//    sort(nodeWeightList.begin(),nodeWeightList.end())
+//}
+
+void JPGWrite::treeValk(node *root1,node *root2){
+
+    cout<<"root1 key: "<<root1->Key<<"; root2 key"<<root2->Key<<endl;
+    if(root1->Left!=0){
+        treeValk(root1->Left,root2->Left);
+    }
+    if(root1->Right!=0){
+        treeValk(root1->Right,root2->Right);
+    }
+
+}

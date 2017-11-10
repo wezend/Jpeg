@@ -24,3 +24,13 @@ TREE::~TREE()
 //    delete tmp;
 //}
 
+
+node::node()
+{
+    this->Key=-2;
+    this->Back=0;
+    this->Left=0;
+    this->Lvl=0;
+    this->Right=0;
+    this->weight=0;
+}

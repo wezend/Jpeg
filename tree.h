@@ -8,7 +8,13 @@ int Key=-1;
 node *Left=0;
 node *Right=0;
 node *Back=0;
-int weight=0;
+unsigned long int weight=0;
+
+node();
+
+bool operator < (const node& a) const{
+          return weight < a.weight;
+        }
 
 };
 

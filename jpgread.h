@@ -16,11 +16,19 @@ using namespace std;
 
 #include "jpg.h"
 
+//Данный класс создан исключительно для считывания
+//изображения. Он содержит один публичный метод read(),
+//остальные инкапсулированы в приватной секции класса.
+
+//функции побайтового считывания изображения.
+//u8 - 1 байт, u16 - 2 байта, u32 - 4 байта
 static unsigned short read_u8(FILE *fp);
 static unsigned short read_u16(FILE *fp);
 static unsigned int   read_u32(FILE *fp);
 static int            read_s32(FILE *fp);
 
+//структура для времмного хранения и обработки одной
+//компонент изображения.
 typedef struct
 {
     int z=0;

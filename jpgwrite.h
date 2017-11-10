@@ -17,6 +17,10 @@ using namespace std;
 #include "jpg.h"
 
 
+//Клас для записи кода изображения в
+//.jpg файл. Реализван метод write, остальные
+//инкапсулированы в приватную секцию класса
+
 class JPGWrite
 {
 public:
@@ -30,10 +34,16 @@ private:
     JPG *jpg;
     FILE *f1;
     char o[1000];
+    vector<node*> nodeWeightList;
+
     void writeFFDB();
     void writeFFC0();
     void writeFFC4();
     void writeFFDA();
+
+    int tableElementLenth(int originalValue);
+    void addInNodeVector(int value);
+    void treeValk(node *root1,node *root2);
 };
 
 #endif // JPGWRITE_H
