@@ -35,6 +35,9 @@ private:
     FILE *f1;
     char o[1000];
     vector<node*> nodeWeightList;
+    list<node*> nodeWeightLIST;
+    vector<pair<int,string>> jpgTmpDHTtable;
+    node *jpgTmpRoot;
 
     void writeFFDB();
     void writeFFC0();
@@ -43,7 +46,13 @@ private:
 
     int tableElementLenth(int originalValue);
     void addInNodeVector(int value);
-    void treeValk(node *root1,node *root2);
+    void treeValk(node *root);
+    void makeHaffmanTree();
+    void addInACNodeVector(int zeroCount, int value);
+    void addElInNodeLIST(node *tmpNode);
+    void makeTree();
+    void recTreeValk(node *root, int *lenth);
+    void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);
 };
 
 #endif // JPGWRITE_H

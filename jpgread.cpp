@@ -317,8 +317,11 @@ void JPGRead::readFFC4()
 
 //    демонстрация работоспособности считывания FFC4
     for(int i=0;i<4;i++) {
-        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++)
-        cout<<hex<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+        int c=1;
+        for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++){
+        cout<<dec<<setw(3)<<c<<") "<<hex<<setw(3)<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second<<endl;
+        c++;
+        }
         cout<<"~~~~~~~~~~~~~~"<<endl;
     }
 
@@ -674,23 +677,25 @@ void JPGRead::decodTables(){
 
     //    большой вывод всех таблиц
 
-    JPGALLPICTABLES *tmpP;
-    int ccounter=1;
-        for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+//    JPGALLPICTABLES *tmpP;
+//    int ccounter=1;
+//        for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
 
-            tmpP=*j;
-            cout<<"!!!!!!!!!!~ TABLES # "<<dec<<ccounter<<" ~!!!!!!!!!!!"<<endl;
-            ccounter++;
-            for(int ii=0;ii<4;ii++){
-                cout<<"Y-table # "<<ii<<endl;
-                for(int i=0;i<8;i++){
-                    for(int jj=0;jj<8;jj++){}
-//                        cout<<dec<<setw(3)<<tmpP->jpgYtable[ii][i][jj];
-//                    cout<<endl/*<<setw(3)<<tmpP->jpgYtable[ii][0][0]*/;
-                }
-                cout<<setw(3)<<tmpP->jpgYtable[ii][0][0]<<endl;
-//                cout<<endl;
-            }
+//            tmpP=*j;
+//            cout<<"!!!!!!!!!!~ TABLES # "<<dec<<ccounter<<" ~!!!!!!!!!!!"<<endl;
+//            ccounter++;
+//            for(int ii=0;ii<4;ii++){
+//                cout<<"Y-table # "<<ii<<endl;
+//                for(int i=0;i<8;i++){
+//                    for(int jj=0;jj<8;jj++){
+//                        cout<<dec<<setw(4)<<tmpP->jpgYtable[ii][i][jj];
+////                    cout<<endl/*<<setw(3)<<tmpP->jpgYtable[ii][0][0]*/;
+//                    }
+//                    cout<<endl;
+//                }
+//                cout<<setw(3)<<tmpP->jpgYtable[ii][0][0]<<endl;
+
+//            }
 
 //                cout<<"Cb-table"<<endl;
 //                for(int i=0;i<8;i++){
@@ -706,6 +711,6 @@ void JPGRead::decodTables(){
 //                cout<<endl;
 //                }
 
-        }
+//        }
 
 }

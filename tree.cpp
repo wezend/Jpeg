@@ -33,4 +33,6 @@ node::node()
     this->Lvl=0;
     this->Right=0;
     this->weight=0;
+
+    //return this;
 }

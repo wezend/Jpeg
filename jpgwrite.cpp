@@ -10,10 +10,13 @@
 #include <string.h>
 #include <math.h>
 #include<algorithm>
+#include <iomanip>
 
 
 using namespace std;
 
+//please, don.t use it. Everywhere;
+string dhtCode2="";
 
 JPGWrite::JPGWrite()
 {
@@ -67,146 +70,9 @@ void JPGWrite::write()
 
     writeFFDA();
 
-
-    JPGALLPICTABLES *tmpP;
-    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
-        tmpP=*j;
-        for(int ii=3;ii>0;ii--){
-             tmpP->jpgYtable[ii][0][0]=tmpP->jpgYtable[ii][0][0] - tmpP->jpgYtable[ii-1][0][0];
-//             if(tmpP->jpgYtable[ii][0][0]<0)
-//                cout<<tmpP->jpgYtable[ii][0][0]<<" "<<endl;
-        }
-//        if(tmpP->jpgYtable[0][0][0]<0)
-//            cout<<tmpP->jpgYtable[0][0][0]<<" "<<endl;
-    }
-
-    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
-        tmpP=*j;
-
-        for(int i=0;i<4;i++){
-            addInNodeVector(tmpP->jpgYtable[i][0][0]);
-        }
-
-    }
+    makeHaffmanTree();
 
 
-    //вывод вектора нод для будущего дерева хаффмана
-
-//    char tmpChar;
-
-//    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-//         tmpNode=*f;
-//         itt=tmpNode->Key&255;
-
-
-//         cout<<hex<<itt<<" x "<<dec<<tmpNode->weight<<endl;
-//    }
-
-//    cout<<"~~~~~~~~~~~~"<<endl;
-
-    sort(nodeWeightList.begin(),nodeWeightList.end(),[](const node* a, const node* b){
-        return a->weight < b->weight;
-    });
-
-
-    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-         node* tmpNode=*f;
-         __int16 itt=tmpNode->Key&255;
-         cout<<dec<<itt<<" x "<<dec<<tmpNode->weight<<endl;
-    }
-
-        node* leftNode;
-        node* rightNode;
-
-        cout<<"~~~~~"<<endl;
-
-    vector<node*> tmpVector;
-
-    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-         node* tmpNode=*f;
-         tmpVector.push_back(tmpNode);
-    }
-
-    while (tmpVector.size()>1) {
-
-        cout<<tmpVector.size()<<endl;
-
-
-        sort(tmpVector.begin(),tmpVector.end(),[](const node* a, const node* b){
-            return a->weight < b->weight;
-        });
-
-
-//        node* tmpNoded;
-//        __int16 itt;
-
-//        for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-//             tmpNoded=*f;
-//             itt=tmpNoded->Key&255;
-//             cout<<hex<<itt<<" x "<<dec<<tmpNoded->weight<<endl;
-//        }
-
-        leftNode=*nodeWeightList.begin();
-        nodeWeightList.begin()++;
-        rightNode=*nodeWeightList.begin();
-
-
-        cout<<dec<<leftNode->weight<<" xx "<<rightNode->weight<<endl;
-
-
-        node* tmpNode=new node;
-
-        tmpNode->Left=leftNode;
-        tmpNode->Right=rightNode;
-        tmpNode->weight=leftNode->weight + rightNode->weight;
-
-        node* bN=*nodeWeightList.begin();
-        bN=tmpNode;
-
-        nodeWeightList.erase(nodeWeightList.begin()+1);
-    }
-
-//    cout<<"45454";
-        node* tmpNode;
-        __int16 itt;
-
-        for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-             tmpNode=*f;
-             itt=tmpNode->Key&255;
-             cout<<hex<<itt<<" x "<<dec<<tmpNode->weight<<endl;
-        }
-
-
-    treeValk(jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtreesRoots,*nodeWeightList.begin());
-
-
-
-
-
-
-
-    //        for(int i=0;i<4;i++){
-    //            bool newTrigger=1;
-    //             node* tmpNodeWeightList;
-    //            for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
-    //                tmpNodeWeightList=*f;
-
-
-
-
-    //                if(tmpP->jpgYtable[i][0][0]==tmpNodeWeightList->weight)
-    //                {
-
-    //                }
-
-
-    //            }
-
-    //        }
-
-//    tableElementLenth(5);
-//    tmpP=*jpg->picMark.jpgAllPicTables.begin();
-//    tableElementLenth(tmpP->jpgYtable[0][0][0]);
 
 
 
@@ -332,6 +198,10 @@ void JPGWrite::writeFFC0(){
 }
 
 void JPGWrite::writeFFC4(){
+
+    //вызвать тут
+//    makeHaffmanTree();
+
     string x;
     int f,z;
 
@@ -354,6 +224,8 @@ void JPGWrite::writeFFC4(){
     }
     x=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[0].second;
     z = 1, f = 0;
+
+
 
     for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[i]->jpgTableSize;j++){
         x=jpg->dhtAllMark.jpgDHTtables[i]->jpgDHTtable[j].second;
@@ -411,12 +283,12 @@ int JPGWrite::tableElementLenth(int originalValue){
 
     for(int i=0;i<8;i++){
         tmpBit=(curretByte >> i) & 0x01;
-        cout<<tmpBit<<" ";
+//        cout<<tmpBit<<" ";
         if(tmpBit==1)
                 lenth=i+1;
 
     }
-    cout<<endl;
+//    cout<<endl;
 
         return lenth;
 
@@ -427,6 +299,7 @@ void JPGWrite::addInNodeVector(int value){
 
     node* tmpNode;
     bool newNodeTrigger=1;
+//    cout<<tableElementLenth(value)<<endl;
     for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
         tmpNode=*f;
 
@@ -437,8 +310,11 @@ void JPGWrite::addInNodeVector(int value){
         }
     }
 
+    //если нет ноды, то создаётся новая(вообще здесь if не нужен, но так нагляднее)
     if(newNodeTrigger){
+
 //                cout<<tmpP->jpgYtable[i][0][0]<<"!"<<endl;
+
         node* newNode=new node;
         newNode->Key= tableElementLenth( value );
         newNode->weight=1;
@@ -446,22 +322,645 @@ void JPGWrite::addInNodeVector(int value){
 
 //        cout<<"New node "<<newNode->Key<<endl;
 
-        return;
     }
+    return;
 }
 
-//void JPGWrite::sortNodeVector(){
-//    sort(nodeWeightList.begin(),nodeWeightList.end())
-//}
+void JPGWrite::addInACNodeVector(int zeroCount, int value){
 
-void JPGWrite::treeValk(node *root1,node *root2){
+    int nodeKey=0;
+    int tmpNodeKey=0;
 
-    cout<<"root1 key: "<<root1->Key<<"; root2 key"<<root2->Key<<endl;
-    if(root1->Left!=0){
-        treeValk(root1->Left,root2->Left);
+
+
+    if(zeroCount>15)
+        cout<<dec<<zeroCount<<" "<<dec<<value<<endl;
+
+
+
+    nodeKey=zeroCount<<4 | tableElementLenth(value);
+//    cout<<hex<<nodeKey<<endl;
+
+    node* tmpNode;
+
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+        tmpNode=*f;
+        tmpNodeKey=tmpNode->Key;
+        if(tmpNodeKey>>4 == zeroCount)
+            if((tmpNodeKey&15) == tableElementLenth(value)){
+            tmpNode->weight+=1;
+            return;
+//            cout<<"Add in node weight "<<tmpNode->Key<<" "<<tmpNode->weight<<endl;
+        }
     }
-    if(root1->Right!=0){
-        treeValk(root1->Right,root2->Right);
+
+    //если нет ноды, то создаётся новая
+
+        node* newACNode=new node;
+        newACNode->Key= nodeKey;
+        newACNode->weight=1;
+        nodeWeightList.push_back(newACNode);
+//        cout<<"New node "<<newNode->Key<<endl;
+    return;
+}
+
+void JPGWrite::addElInNodeLIST(node* tmpNode){
+    for(list<node*>::iterator f=nodeWeightLIST.begin();f!=nodeWeightLIST.end();f++){
+         node* vecNode=*f;
+         if(vecNode->weight>tmpNode->weight){
+             nodeWeightLIST.emplace(f,tmpNode);
+             return;
+         }
+    }
+    nodeWeightLIST.push_back(tmpNode);
+}
+
+void JPGWrite::makeTree(){
+
+    //строим дерево!
+    //итератор для прохода по вектору (теперь всё буферизируем в лист,
+    //ибо в векторах ломается ).
+    //основной смысл: всё дерево расположено в векторе.
+    //новый элемент образуется из 2х самых маловесящих.
+    //кроме первого. первый получает предка и вставляется в назад лист
+    //сортировка и добавление проиходит не через sort, а с помощью метода addElInNodeVector()
+    //добавляем пока вес какого либо элемента не станет равен
+    //весу всех изначальных элементов.(это будет корень)
+
+    //создаём двусвязный список nodeWeightLIST
+    //обычный лист на самом деле вектор. Вот так вот((
+    unsigned long int totalWeight=0;
+
+    //заполняем его
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         totalWeight+=tmpNode->weight;
+         nodeWeightLIST.push_back(tmpNode);
+    }
+
+    list<node*>::iterator listIter=nodeWeightLIST.begin();
+
+    node* firstNode=new node;
+    node* tN=*listIter;
+
+    firstNode->Left=tN;
+    firstNode->weight=tN->weight;
+    firstNode->Key=-2;
+
+    addElInNodeLIST(firstNode);
+    listIter++;
+
+    unsigned long int tmpTotalWeight=0;
+    while(true){
+
+         node* tmpNodeFirst=*listIter;
+         tmpTotalWeight+=tmpNodeFirst->weight;
+
+         listIter++;
+         node* tmpNodeSecond=*listIter;
+         tmpTotalWeight+=tmpNodeSecond->weight;
+
+         node* tmpFatherNode=new node;
+
+         tmpFatherNode->Key=-2;
+         tmpFatherNode->weight=tmpNodeFirst->weight + tmpNodeSecond->weight;
+         tmpFatherNode->Left=tmpNodeFirst;
+         tmpFatherNode->Right=tmpNodeSecond;
+         tmpNodeFirst->Back=tmpFatherNode;
+         tmpNodeSecond->Back=tmpFatherNode;
+
+         addElInNodeLIST(tmpFatherNode);
+
+         if(tmpFatherNode->weight==totalWeight){
+             jpgTmpRoot=tmpFatherNode;
+             break;
+         }
+
+
+         listIter++;
+
+    }
+
+
+    //вывод дерева
+//    cout<<endl;
+//    int c=1;
+//    for(list<node*>::iterator f=nodeWeightLIST.begin();f!=nodeWeightLIST.end();f++){
+//         node* tmpNode=*f;
+//         __int16 itt=tmpNode->Key;
+//         cout<<c<<") "<<dec<<itt<<" x "<<dec<<tmpNode->weight<<endl;
+//         c++;
+//    }
+
+}
+
+void JPGWrite::recTreeValk(node *root,int *lenth){
+
+    if(root->Left!=0){
+        *lenth+=1;
+        recTreeValk(root->Left,lenth);
+    }
+    if(root->Right!=0){
+        *lenth+=1;
+        recTreeValk(root->Right,lenth);
+    }
+    if(root->Key!=-2){
+        pair<int,string> tmpPair;
+        tmpPair.first=root->Key;
+        tmpPair.second=to_string(*lenth);
+        jpgTmpDHTtable.push_back(tmpPair);
+    }
+    *lenth-=1;
+
+}
+
+void JPGWrite::treeValk(node *root){
+
+    int lenth=0;
+    recTreeValk(root,&lenth);
+
+//    int c=1;
+//    for(vector<pair<int,string>>::iterator f=jpgTmpDHTtable.begin();f!=jpgTmpDHTtable.end();f++){
+//        pair<int,string> tmpPair=*f;
+//        cout<<dec<<c<<") "<<hex<<tmpPair.first<<" "<<tmpPair.second<<endl;
+//    }
+
+}
+
+void JPGWrite::makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree){
+
+    if (tmpNode->Left !=0 and tmpNode->Right !=0 and tmpNode->Left->Key != -1 and tmpNode->Right->Key != -1){
+    tmpNode->Key = -2;
+    dhtCode2.erase(dhtCode2.length()-1,1);
+    makeTreeRec(i,dhtTmp,tmpNode->Back,DHTtree);
+    }
+    if(tmpNode->Left==0){
+    if(tmpNode->Lvl==i){
+    tmpNode->Left=DHTtree->addNode(dhtTmp,(tmpNode->Lvl+1),tmpNode);
+    dhtCode2=dhtCode2+"0";
+
+    }else {
+    tmpNode->Left=DHTtree->addNode(-1,(tmpNode->Lvl+1),tmpNode);
+    dhtCode2+="0";
+    makeTreeRec(i,dhtTmp,tmpNode->Left,DHTtree);
+    }
+    }else if (tmpNode->Left->Key==-1) {
+    dhtCode2+="0";
+    makeTreeRec(i,dhtTmp,tmpNode->Left,DHTtree);
+    }else if(tmpNode->Right==0){
+    if(tmpNode->Lvl==i){
+    tmpNode->Right=DHTtree->addNode(dhtTmp,(tmpNode->Lvl+1),tmpNode);
+    dhtCode2+="1";
+    }else {
+    tmpNode->Right=DHTtree->addNode(-1,(tmpNode->Lvl+1),tmpNode);
+    dhtCode2+="1";
+    makeTreeRec(i,dhtTmp,tmpNode->Right,DHTtree); }
+    }else if (tmpNode->Right->Key==-1) {
+    dhtCode2+="1";
+    makeTreeRec(i,dhtTmp,tmpNode->Right,DHTtree);
     }
 
 }
+
+void JPGWrite::makeHaffmanTree(){
+
+
+    JPGALLPICTABLES *tmpP;
+
+    cout<<"~~~~~ DC begin ~~~~~~"<<endl;
+
+    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+        tmpP=*j;
+        for(int ii=3;ii>0;ii--){
+             tmpP->jpgYtable[ii][0][0]=tmpP->jpgYtable[ii][0][0] - tmpP->jpgYtable[ii-1][0][0];
+        }
+
+    }
+
+    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+        tmpP=*j;
+
+        for(int i=0;i<4;i++){
+            addInNodeVector(tmpP->jpgYtable[i][0][0]);
+        }
+
+    }
+
+    sort(nodeWeightList.begin(),nodeWeightList.end(),[](const node* a, const node* b){
+        return a->weight < b->weight;
+    });
+
+
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         __int16 itt=tmpNode->Key&255;
+         cout<<dec<<itt<<" x "<<dec<<tmpNode->weight<<endl;
+    }
+
+    makeTree();
+    treeValk(jpgTmpRoot);
+
+//    sort(jpgTmpDHTtable.begin(),jpgTmpDHTtable.end(),[](const pair<int,string>* a, const pair<int,string>* b){
+//        return atoi(a->second) < atoi(b->second);
+//    });
+
+    int lenthTable[16];
+    for(int i=0;i<16;i++){
+        lenthTable[i]=0;
+    }
+
+    for(int i=0;i<16;i++){
+        for(vector<pair<int,string>>::iterator f=jpgTmpDHTtable.begin();f!=jpgTmpDHTtable.end();f++){
+            pair<int,string> tmpPair=*f;
+            string str=tmpPair.second;
+            int t=atoi(str.c_str());
+            if(t==i+1){
+                lenthTable[i]+=1;
+            }
+
+        }
+
+    }
+
+    int dhtElCount=0;
+    for(int i=0;i<16;i++){
+        cout<<lenthTable[i]<<" ";
+        dhtElCount+=lenthTable[i];
+    }
+    cout<<endl;
+
+    vector<node*> reverseNodeVector2;
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+        reverseNodeVector2.emplace(reverseNodeVector2.begin(),*f);
+    }
+
+    int dhtTabeleCounter=0;
+    TREE DHTtree;
+    node *tmpNode;
+    tmpNode=DHTtree.root;
+    int dhtTmp;
+    int dhtAllMarkCounter=0;
+    vector<node*>::iterator nodeWeightListIterator=reverseNodeVector2.begin();
+
+    delete [] jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable;
+     jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable=new pair<int,string>[dhtElCount];
+
+    for(int i=0;i<16;i++){
+        for(int j=0;j<lenthTable[i];j++){
+            node* tNode=*nodeWeightListIterator;
+            nodeWeightListIterator++;
+            dhtTmp=tNode->Key;
+            dhtCode2="";
+            makeTreeRec(i,dhtTmp,tmpNode, &DHTtree);
+            jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable[dhtTabeleCounter].first=dhtTmp;
+            jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable[dhtTabeleCounter].second=dhtCode2;
+
+            dhtTabeleCounter++;
+        }
+    }
+
+
+    jpg->dhtAllMark.jpgDHTtables[dhtAllMarkCounter]->jpgDHTtreesRoots=DHTtree.root;
+    dhtAllMarkCounter++;
+
+    int cc=1;
+    for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[0]->jpgTableSize;j++){
+    cout<<dec<<setw(3)<<cc<<") "<<hex<<setw(3)<<jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[0]->jpgDHTtable[j].second<<endl;
+    cc++;
+    }
+    cout<<"~~~~~~~~~~~~~~"<<endl;
+
+
+    cout<<"~~~~~ DC end ~~~~~~"<<endl;
+
+    cout<<"~~~~~ AC begin ~~~~~~"<<endl;
+    //очищаем для создания АС дерева
+    nodeWeightList.clear();
+    nodeWeightLIST.clear();
+    jpgTmpDHTtable.clear();
+
+    //основной алгоритм считывания элементов в nodeWeightList
+    for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+        tmpP=*j;
+
+        for(int i=0;i<4;i++){
+            int zeroCounter=0;
+            bool zeroTrigger=1;
+            bool lastZeroTrigger=0;
+
+            int z=2;
+            int f=2;
+            int n,m;
+            n=m=0;
+
+            do{
+
+                if (f==0){
+                    if(n!=7)
+                        n++;
+                    else
+                        m++;
+                    f=1;
+
+                    if(tmpP->jpgYtable[i][n][m]==0){
+                        zeroCounter++;
+
+                        if(zeroCounter==15 && zeroTrigger){
+                            if(tmpP->jpgYtable[i][n-1][m+1]==0){
+                                addInACNodeVector(zeroCounter,0);
+                            zeroCounter=0;
+                            zeroTrigger=0;
+                            lastZeroTrigger=1;
+                            }
+
+                        }
+
+                    }else {
+                        addInACNodeVector(zeroCounter,tmpP->jpgYtable[i][n][m]);
+                        zeroCounter=0;
+                        if(zeroTrigger==0){
+                            zeroTrigger=1;
+                            lastZeroTrigger=0;
+                        }
+                    }
+
+                    z++;
+                    continue;
+                }
+                if(f==1){
+                    n--;
+                    m++;
+                    if(n==0 or m==7)
+                        {f=2;}
+
+                    if(tmpP->jpgYtable[i][n][m]==0){
+                        zeroCounter++;
+
+                        if(zeroCounter==15 && zeroTrigger){
+                            if(f==2){
+                            if(m!=7){
+                               if(tmpP->jpgYtable[i][n][m+1]==0){
+                                addInACNodeVector(zeroCounter,0);
+                            zeroCounter=0;
+                            zeroTrigger=0;
+                            lastZeroTrigger=1;
+                               }
+                            }else{
+                                if(tmpP->jpgYtable[i][n+1][m]==0){
+                                 addInACNodeVector(zeroCounter,0);
+                             zeroCounter=0;
+                             zeroTrigger=0;
+                             lastZeroTrigger=1;
+                                }
+                            }
+                            }else{
+                                if(tmpP->jpgYtable[i][n-1][m+1]==0){
+                                 addInACNodeVector(zeroCounter,0);
+                             zeroCounter=0;
+                             zeroTrigger=0;
+                             lastZeroTrigger=1;
+                                }
+                            }
+                        }
+
+                    }else {
+                        addInACNodeVector(zeroCounter,tmpP->jpgYtable[i][n][m]);
+                        zeroCounter=0;
+                        if(zeroTrigger==0){
+                            zeroTrigger=1;
+                            lastZeroTrigger=0;
+                        }
+                    }
+
+
+                    z++;
+                    continue;
+                }
+
+                if (f==2){
+                    if(m!=7)
+                        m++;
+                    else
+                        n++;
+
+                    if(tmpP->jpgYtable[i][n][m]==0){
+                        zeroCounter++;
+
+                        if(zeroCounter==15 && zeroTrigger){
+                            if(tmpP->jpgYtable[i][n+1][m-1]==0){
+                                addInACNodeVector(zeroCounter,0);
+                            zeroCounter=0;
+                            zeroTrigger=0;
+                            lastZeroTrigger=1;
+                            }
+
+                        }
+
+                    }else {
+                        addInACNodeVector(zeroCounter,tmpP->jpgYtable[i][n][m]);
+                        zeroCounter=0;
+                        if(zeroTrigger==0){
+                            zeroTrigger=1;
+                            lastZeroTrigger=0;
+                        }
+                    }
+
+                    z++;
+                    f=3;
+                    continue;
+                }
+                if(f==3){
+                    n++;
+                    m--;
+                    if(m==0 or n==7)
+                        f=0;
+
+
+                    if(tmpP->jpgYtable[i][n][m]==0){
+                        zeroCounter++;
+
+                        if(zeroCounter==15 && zeroTrigger){
+                            if(f==0){
+                            if(n!=7){
+                               if(tmpP->jpgYtable[i][n+1][m]==0){
+                                addInACNodeVector(zeroCounter,0);
+                            zeroCounter=0;
+                            zeroTrigger=0;
+                            lastZeroTrigger=1;
+                               }
+                            }else{
+                                if(tmpP->jpgYtable[i][n][m+1]==0){
+                                 addInACNodeVector(zeroCounter,0);
+                             zeroCounter=0;
+                             zeroTrigger=0;
+                             lastZeroTrigger=1;
+                                }
+                            }
+                            }else{
+                                if(tmpP->jpgYtable[i][n+1][m-1]==0){
+                                 addInACNodeVector(zeroCounter,0);
+                             zeroCounter=0;
+                             zeroTrigger=0;
+                             lastZeroTrigger=1;
+                                }
+                            }
+                        }
+
+                    }else {
+                        addInACNodeVector(zeroCounter,tmpP->jpgYtable[i][n][m]);
+                        zeroCounter=0;
+                        if(zeroTrigger==0){
+                            zeroTrigger=1;
+                            lastZeroTrigger=0;
+                        }
+                    }
+
+
+                    z++;
+                    continue;
+                }
+
+
+
+            }while(z!=65);
+
+            if(lastZeroTrigger){
+                for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+                     node* tmpNode=*f;
+                     if(tmpNode->Key==240)
+                         tmpNode->weight-=1;      
+                }
+
+            }
+
+
+            if(zeroCounter!=0)
+                addInACNodeVector(0,0);
+        }
+
+    }
+
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         if(tmpNode->weight==0)
+             nodeWeightList.erase(f);
+    }
+
+    //сортировка по возрастанию
+    sort(nodeWeightList.begin(),nodeWeightList.end(),[](const node* a, const node* b){
+        return a->weight < b->weight;
+    });
+
+    //вывод отсортированного вектора
+    int c=1;
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+         node* tmpNode=*f;
+         __int16 itt=tmpNode->Key;
+         cout<<c<<") "<<dec<<itt<<" x "<<dec<<tmpNode->weight<<endl;
+         c++;
+    }
+
+    makeTree();
+    treeValk(jpgTmpRoot);
+
+
+    lenthTable[16];
+    for(int i=0;i<16;i++){
+        lenthTable[i]=0;
+    }
+
+    for(int i=0;i<16;i++){
+        for(vector<pair<int,string>>::iterator f=jpgTmpDHTtable.begin();f!=jpgTmpDHTtable.end();f++){
+            pair<int,string> tmpPair=*f;
+            string str=tmpPair.second;
+            int t=atoi(str.c_str());
+            if(t==i+1){
+                lenthTable[i]+=1;
+            }
+
+        }
+
+    }
+
+
+    dhtElCount=0;
+    for(int i=0;i<16;i++){
+        cout<<lenthTable[i]<<" ";
+        dhtElCount+=lenthTable[i];
+    }
+    cout<<endl;
+
+    vector<node*> reverseNodeVector;
+    for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
+        reverseNodeVector.emplace(reverseNodeVector.begin(),*f);
+    }
+
+
+
+    dhtTabeleCounter=0;
+    TREE DHTtree2;
+    tmpNode=DHTtree2.root;
+    dhtTmp;
+    nodeWeightListIterator=reverseNodeVector.begin();
+
+    delete [] jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable;
+    jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable=new pair<int,string>[dhtElCount];
+
+    for(int i=0;i<16;i++){
+        for(int j=0;j<lenthTable[i];j++){
+            node* tNode=*nodeWeightListIterator;
+            nodeWeightListIterator++;
+            dhtTmp=tNode->Key;
+            dhtCode2="";
+            makeTreeRec(i,dhtTmp,tmpNode, &DHTtree2);
+            jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable[dhtTabeleCounter].first=dhtTmp;
+            jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable[dhtTabeleCounter].second=dhtCode2;
+
+            dhtTabeleCounter++;
+        }
+    }
+
+
+    jpg->dhtAllMark.jpgDHTtables[dhtAllMarkCounter]->jpgDHTtreesRoots=DHTtree2.root;
+
+    cc=1;
+    for(int j=0;j<jpg->dhtAllMark.jpgDHTtables[1]->jpgTableSize;j++){
+    cout<<dec<<setw(3)<<cc<<") "<<hex<<setw(3)<<jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable[j].first<<"; "<<jpg->dhtAllMark.jpgDHTtables[1]->jpgDHTtable[j].second<<endl;
+    cc++;
+    }
+    cout<<"~~~~~~~~~~~~~~"<<endl;
+
+
+
+
+
+
+
+
+    for(int i=0;i<16;i++){
+        lenthTable[i]=0;
+    }
+
+    for(int i=0;i<16;i++){
+        for(vector<pair<int,string>>::iterator f=jpgTmpDHTtable.begin();f!=jpgTmpDHTtable.end();f++){
+            pair<int,string> tmpPair=*f;
+            string str=tmpPair.second;
+            int t=atoi(str.c_str());
+            if(t==i+1){
+                lenthTable[i]+=1;
+            }
+
+        }
+
+    }
+    for(int i=0;i<16;i++){
+        cout<<lenthTable[i]<<" ";
+    }
+
+    cout<<"~~~~~ AC end ~~~~~~"<<endl;
+
+
+}
+
+
+

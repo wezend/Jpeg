@@ -15,9 +15,9 @@
 
 using namespace std;
 
+
 int main(int argc, char *argv[])
 {
-
     JPG jpg("D:\\test.jpg");
     JPGRead jpgRead;
     jpgRead.setJpg(&jpg);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 
     jpgRead.read();
-    jpgConverter.ConvertYCbCrToRGB();
+//    jpgConverter.ConvertYCbCrToRGB();
     jpgWrite.write();
 
 
