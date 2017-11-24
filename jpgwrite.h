@@ -53,6 +53,11 @@ private:
     void makeTree();
     void recTreeValk(node *root, int *lenth);
     void makeTreeRec(int i, int dhtTmp, node* tmpNode, TREE *DHTtree);
+    void codeJpg();
+    vector<vector<pair<int, int> > > makeCodes(JPGALLPICTABLES *tmpP);
+    pair<int, int> addPair(int zeros, int value);
+    void codeIt(vector<vector<pair<int, int> > > acNumbers, vector<int> dcNumbers);
+    int binCode(string sBinCode, int value);
 };
 
 #endif // JPGWRITE_H

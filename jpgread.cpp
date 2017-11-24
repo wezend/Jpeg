@@ -358,7 +358,7 @@ void JPGRead::readPic(){
             }
         }
         jpg->picMark.jpgPicture.push_back(cTmp);
-//        cout<<cTmp<<endl;
+//        cout<<cTmp<<" ";
     }
 
 }
@@ -403,7 +403,7 @@ void makeTreeRec(int i, int dhtTmp, node *tmpNode, TREE *DHTtree)
 char JPGRead::getNewByte(){
     char tmp= *jpgPicIterator;
     jpgPicIterator++;
-    bitCounter=7;
+    bitCounter=sizeof(tmp)*8-1;
     return tmp;
 }
 
@@ -679,7 +679,8 @@ void JPGRead::decodTables(){
 
 //    JPGALLPICTABLES *tmpP;
 //    int ccounter=1;
-//        for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();j!=jpg->picMark.jpgAllPicTables.end();j++){
+//        for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();
+//            j!=jpg->picMark.jpgAllPicTables.end();j++){
 
 //            tmpP=*j;
 //            cout<<"!!!!!!!!!!~ TABLES # "<<dec<<ccounter<<" ~!!!!!!!!!!!"<<endl;
@@ -688,11 +689,17 @@ void JPGRead::decodTables(){
 //                cout<<"Y-table # "<<ii<<endl;
 //                for(int i=0;i<8;i++){
 //                    for(int jj=0;jj<8;jj++){
+                        //стандартный вывод
 //                        cout<<dec<<setw(4)<<tmpP->jpgYtable[ii][i][jj];
-////                    cout<<endl/*<<setw(3)<<tmpP->jpgYtable[ii][0][0]*/;
+
+//                        вывод чивел больше или меньше заданного
+//                        if(tmpP->jpgYtable[ii][i][jj]>255)
+//                            cout<<dec<<(tmpP->jpgYtable[ii][i][jj])<<endl;
+
 //                    }
 //                    cout<<endl;
 //                }
+//                вывод DC коэффициентов
 //                cout<<setw(3)<<tmpP->jpgYtable[ii][0][0]<<endl;
 
 //            }
