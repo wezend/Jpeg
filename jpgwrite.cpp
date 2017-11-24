@@ -182,7 +182,7 @@ void JPGWrite::writeFFC0(){
 void JPGWrite::writeFFC4(){
 
     //вызвать тут
-//    makeHaffmanTree();
+    makeHaffmanTree();
 
     string x;
     int f,z;
@@ -258,8 +258,8 @@ void JPGWrite::writeFFDA(){
 //        }
 //        cout<<"~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
 
-//        jpg->picMark.jpgPicture.clear();
-//        codeJpg();
+        jpg->picMark.jpgPicture.clear();
+        codeJpg();
 
 //        for(list<char>::iterator f=jpg->picMark.jpgPicture.begin();
 //            f!=jpg->picMark.jpgPicture.end();f++){
@@ -423,6 +423,8 @@ void JPGWrite::makeTree(){
 
     addElInNodeLIST(firstNode);
     listIter++;
+//    if(*listIter==firstNode)
+//        return;
 
     unsigned long int tmpTotalWeight=0;
     while(true){
@@ -431,6 +433,10 @@ void JPGWrite::makeTree(){
          tmpTotalWeight+=tmpNodeFirst->weight;
 
          listIter++;
+         if(listIter==nodeWeightLIST.end()){
+             jpgTmpRoot=tmpNodeFirst;
+             break;
+         }
          node* tmpNodeSecond=*listIter;
          tmpTotalWeight+=tmpNodeSecond->weight;
 
@@ -1003,12 +1009,13 @@ void JPGWrite::makeHaffmanTree(){
         }
     }
 
+
     dhtElCount=0;
     for(int i=0;i<16;i++){
         cout<<lenthTable[i]<<" ";
         dhtElCount+=lenthTable[i];
     }
-    cout<<endl;
+    jpg->dhtAllMark.jpgDHTtables[2]->jpgTableSize=dhtElCount;
 
     vector<node*> reverseNodeVector3;
     for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
@@ -1523,6 +1530,8 @@ void JPGWrite::makeHaffmanTree(){
      }
      cout<<endl;
 
+     jpg->dhtAllMark.jpgDHTtables[3]->jpgTableSize=dhtElCount;
+
      vector<node*> reverseNodeVector4;
      for(vector<node*>::iterator f=nodeWeightList.begin();f!=nodeWeightList.end();f++){
          reverseNodeVector4.emplace(reverseNodeVector4.begin(),*f);
@@ -1940,7 +1949,6 @@ __int32 JPGWrite::binCode(string sBinCode,int value){
     return buffer;
 
 }
-
 
 void JPGWrite::codeIt(vector<vector<pair<int,int>>> acNumbers, vector<int> dcNumbers){
 

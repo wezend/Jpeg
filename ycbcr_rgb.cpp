@@ -13,8 +13,6 @@
 #include <windef.h>
 #include"tree.h"
 #include "jpgread.h"
-#include "ycbcr_rgb.h"
-#include "ycbcr_rgb.h"
 #include <iomanip>
 
 YCbCr_RGB::YCbCr_RGB()
@@ -31,6 +29,7 @@ void YCbCr_RGB::setJpg(JPG *value)
 {
     jpg = value;
 }
+
 int YCbCr_RGB::obr_cos_sin(int x,int y, int z){
     int s = 0, cu, cv, b[4][8][8];
     for(int u = 0;u < 7;u++){
@@ -44,9 +43,9 @@ int YCbCr_RGB::obr_cos_sin(int x,int y, int z){
                 cv = 1/sqrt(2);
             else
                 cv = 1;
-            s =s + cv * cu * cos((2 * x + 1) * u * 3.14 / 16) * cos((2 * y + 1) * v * 3.14/16) * b[z][x][y];
+            s =s + cv * cu * cos((2 * x + 1) * u * 3.14 / 16) * cos((2 * y + 1) * v * 3.14/16) * b[z][x][y];          
         }
-
+    
 }
     return s*0.25;
 }
@@ -63,9 +62,9 @@ int YCbCr_RGB::cos_sin(int x,int y, int z){
                 cv = 1/2;
             else
                 cv = 1;
-            f =f +cos((2*x+1)*u*3.14/16)*cos((2*y+1)*v*3.14/16)*tmpYtables[z][x][y];// вместо таблицы тм это должна быть
+            f =f +cos((2*x+1)*u*3.14/16)*cos((2*y+1)*v*3.14/16)*tmpYtables[z][x][y];// вместо таблицы тм это должна быть           
         }
-
+    
 }
     return f*0.25*cu*cv;
 }
@@ -134,4 +133,23 @@ void YCbCr_RGB::ConvertYCbCrToRGB(){
         }
 
 
+}
+
+void YCbCr_RGB::MakeGrey(){
+    JPGALLPICTABLES *tmpP;
+        for(vector<JPGALLPICTABLES*>::iterator j = jpg->picMark.jpgAllPicTables.begin();
+            j!=jpg->picMark.jpgAllPicTables.end();j++){
+
+            tmpP=*j;
+
+                for(int i=0;i<8;i++){
+                    for(int jj=0;jj<8;jj++)
+                        tmpP->jpgCb[i][jj]=0;
+
+                }
+                for(int i=0;i<8;i++){
+                    for(int jj=0;jj<8;jj++)
+                        tmpP->jpgCr[i][jj]=0;
+                }
+        }
 }

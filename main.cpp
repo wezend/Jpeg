@@ -18,19 +18,19 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    JPG jpg("D:\\test5.jpg");
+    JPG jpg("D:\\google.jpg");
     JPGRead jpgRead;
     jpgRead.setJpg(&jpg);
 
     JPGWrite jpgWrite;
     jpgWrite.setJpg(&jpg);
 
-//    YCbCr_RGB jpgConverter;
-//    jpgConverter.setJpg(&jpg);
+    YCbCr_RGB jpgConverter;
+    jpgConverter.setJpg(&jpg);
 
 
     jpgRead.read();
-//    jpgConverter.ConvertYCbCrToRGB();
+    jpgConverter.MakeGrey();
     jpgWrite.write();
 
 
